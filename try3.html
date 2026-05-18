@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>龍紋偵探社</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "Noto Serif TC", "Microsoft JhengHei", serif;
+  text-align: center;
+  color: white;
+  background:
+    radial-gradient(circle at top, rgba(255,220,150,0.25), transparent 35%),
+    linear-gradient(135deg, #100704, #2b1208, #050505);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(255,215,120,0.16) 1px, transparent 1px);
+  background-size: 38px 38px;
+  opacity: 0.35;
+  animation: drift 28s linear infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+body::after {
+  content: "龍";
+  position: fixed;
+  right: -30px;
+  bottom: -70px;
+  font-size: 230px;
+  color: rgba(255,215,120,0.05);
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes drift {
+  from { transform: translateX(0); }
+  to { transform: translateX(-180px); }
+}
+
+.screen {
+  display: none;
+  padding: 28px 18px;
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
+}
+
+.active {
+  display: block;
+  animation: fadeIn 0.6s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+h1 {
+  font-size: 44px;
+  margin-top: 80px;
+  letter-spacing: 4px;
+  color: #ffe7a3;
+  text-shadow: 0 0 18px rgba(255,215,120,0.35);
+}
+
+h2 { letter-spacing: 3px; }
+
+p { line-height: 1.8; }
+
+button {
+  width: 85%;
+  max-width: 440px;
+  padding: 15px 18px;
+  margin: 10px auto;
+  border-radius: 999px;
+  border: 1px solid rgba(255,230,160,0.45);
+  font-size: 17px;
+  cursor: pointer;
+  color: #2b1606;
+  background: linear-gradient(135deg, #fff3c4, #d6a546);
+  box-shadow: 0 7px 18px rgba(0,0,0,0.38);
+  transition: 0.2s;
+  letter-spacing: 1px;
+  display: block;
+}
+
+button:hover {
+  transform: scale(1.035);
+  filter: brightness(1.08);
+}
+
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.secondary-btn {
+  background: linear-gradient(135deg, #eeeeee, #999999);
+}
+
+.card {
+  padding: 30px;
+  margin: 18px auto;
+  border-radius: 26px;
+  width: 92%;
+  max-width: 680px;
+  box-shadow:
+    0 10px 30px rgba(0,0,0,0.48),
+    inset 0 0 22px rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.2);
+  animation: fadeUp 0.5s ease;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.jade {
+  background:
+    radial-gradient(circle at top, rgba(96,203,155,0.3), transparent 35%),
+    linear-gradient(135deg, #1e5643, #0b1d16);
+  color: #d8fff0;
+}
+
+.vessel {
+  background:
+    radial-gradient(circle at top, rgba(255,215,130,0.32), transparent 35%),
+    linear-gradient(135deg, #7d3f16, #2a1307);
+  color: #fff3dd;
+}
+
+.ink {
+  background:
+    radial-gradient(circle at top, rgba(200,200,200,0.25), transparent 35%),
+    linear-gradient(135deg, #3b3b3b, #050505);
+  color: #eeeeee;
+}
+
+.art-label {
+  background: rgba(0,0,0,0.28);
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 16px;
+  padding: 12px;
+  margin: 12px auto;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+#artTitle {
+  font-size: 19px;
+  color: #ffe7a3;
+  margin-bottom: 4px;
+}
+
+#artInfo { opacity: 0.85; }
+
+#artImg {
+  width: 100%;
+  max-height: 330px;
+  object-fit: contain;
+  border-radius: 18px;
+  margin-top: 14px;
+  background: rgba(0,0,0,0.32);
+  border: 4px solid rgba(255,215,120,0.25);
+  box-shadow:
+    0 0 24px rgba(255,215,120,0.18),
+    0 0 70px rgba(0,0,0,0.45);
+  display: none;
+  cursor: zoom-in;
+}
+
+.small {
+  font-size: 15px;
+  opacity: 0.92;
+}
+
+#timer {
+  font-size: 20px;
+  margin: 12px;
+  font-weight: bold;
+  color: #ffe7a3;
+}
+
+#options {
+  position: relative;
+  z-index: 10;
+  margin-top: 12px;
+}
+
+#feedback {
+  min-height: 52px;
+  margin: 14px auto;
+  padding: 14px;
+  width: 90%;
+  max-width: 680px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.13);
+  border: 1px solid rgba(255,255,255,0.16);
+  display: none;
+  line-height: 1.7;
+  position: relative;
+  z-index: 10;
+}
+
+.bar-wrap {
+  width: 90%;
+  max-width: 560px;
+  margin: 18px auto;
+  text-align: left;
+  background: rgba(0,0,0,0.22);
+  border-radius: 22px;
+  padding: 18px;
+  border: 1px solid rgba(255,255,255,0.12);
+}
+
+.bar-title {
+  margin-top: 12px;
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+
+.bar-bg {
+  width: 100%;
+  height: 13px;
+  background: rgba(255,255,255,0.18);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.bar {
+  height: 100%;
+  width: 0%;
+  transition: 0.35s;
+}
+
+#jadeBar { background: #42d392; }
+#vesselBar { background: #e6b45c; }
+#inkBar { background: #b58cff; }
+
+.result-box {
+  background: rgba(0,0,0,0.38);
+  border-radius: 28px;
+  padding: 28px;
+  width: 90%;
+  max-width: 680px;
+  margin: 70px auto 20px;
+  border: 1px solid rgba(255,255,255,0.16);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.5);
+}
+
+#finalTitle {
+  font-size: 30px;
+  color: #ffe7a3;
+  margin-bottom: 12px;
+}
+
+#finalImg {
+  width: 80%;
+  max-width: 360px;
+  max-height: 280px;
+  object-fit: contain;
+  border-radius: 22px;
+  margin: 16px auto;
+  display: none;
+  border: 3px solid rgba(255,215,120,0.25);
+}
+
+.badge {
+  display: inline-block;
+  padding: 6px 14px;
+  margin: 8px;
+  border-radius: 999px;
+  background: rgba(255,215,120,0.16);
+  border: 1px solid rgba(255,215,120,0.3);
+  color: #ffe7a3;
+}
+
+.note {
+  opacity: 0.82;
+  font-size: 14px;
+}
+</style>
+</head>
+
+<body>
+
+<div id="home" class="screen active">
+  <h1>🐉 龍紋偵探社</h1>
+  <p>穿越三個展區，觀察展品中的龍紋，完成你的策展偵探任務。</p>
+  <p class="note">請從玉中之龍、器物之龍、筆墨之龍中找出龍紋背後的文化線索。</p>
+  <button onclick="startGame()">開始調查</button>
+</div>
+
+<div id="select" class="screen">
+  <h2>選擇展區</h2>
+  <p>每個展區有五件作品。請依序觀察、判斷、解謎。</p>
+
+  <button onclick="startStage('jade')">🟢 玉中之龍</button>
+  <button onclick="startStage('vessel')">🟡 器物之龍</button>
+  <button onclick="startStage('ink')">🟣 筆墨之龍</button>
+
+  <div class="bar-wrap">
+    <div class="bar-title">玉中之龍</div>
+    <div class="bar-bg"><div id="jadeBar" class="bar"></div></div>
+
+    <div class="bar-title">器物之龍</div>
+    <div class="bar-bg"><div id="vesselBar" class="bar"></div></div>
+
+    <div class="bar-title">筆墨之龍</div>
+    <div class="bar-bg"><div id="inkBar" class="bar"></div></div>
+  </div>
+
+  <button class="secondary-btn" onclick="finish()">結算結果</button>
+</div>
+
+<div id="game" class="screen">
+  <div id="card" class="card">
+    <div class="badge" id="stageName"></div>
+
+    <div class="art-label">
+      <div id="artTitle"></div>
+      <div id="artInfo"></div>
+    </div>
+
+    <img id="artImg" src="" onclick="zoomImage()">
+
+    <h2 id="question"></h2>
+    <p id="desc" class="small"></p>
+  </div>
+
+  <div id="timer"></div>
+  <div id="options"></div>
+  <div id="feedback"></div>
+</div>
+
+<div id="result" class="screen">
+  <div class="result-box">
+    <h2>🔍 偵探結論</h2>
+    <div id="finalTitle"></div>
+    <img id="finalImg" src="">
+    <p id="finalText"></p>
+    <button onclick="location.reload()">再玩一次</button>
+  </div>
+</div>
+
+<script>
+let stage = "";
+let index = 0;
+let timer;
+let timeLeft = 15;
+let answered = false;
+
+let score = {
+  jade: 0,
+  vessel: 0,
+  ink: 0
+};
+
+const stageText = {
+  jade: "玉中之龍",
+  vessel: "器物之龍",
+  ink: "筆墨之龍"
+};
+
+const data = {
+  jade: [
+    {
+      title: "龍形玉佩",
+      era: "戰國時代",
+      material: "玉",
+      museum: "可填寫收藏單位",
+      q: "這件玉龍最可能與哪一種功能有關？",
+      d: "玉器常與祭祀、禮制、身份象徵有關。",
+      img: "images/1.jpg",
+      options: ["祭祀禮器", "日常餐具", "兒童玩具"],
+      answer: 0,
+      explain: "玉龍常被視為溝通天地、象徵神聖秩序的器物。"
+    },
+    {
+      title: "龍紋玉飾",
+      era: "古代",
+      material: "玉",
+      museum: "可填寫收藏單位",
+      q: "玉中之龍最能表現哪一種精神？",
+      d: "玉在中國文化中常被賦予高貴、純潔與秩序的意義。",
+      img: "images/1.jpg",
+      options: ["禮制與神聖", "商業娛樂", "戰爭破壞"],
+      answer: 0,
+      explain: "玉龍不只是裝飾，也常與權力、祭祀和宇宙秩序相連。"
+    },
+    {
+      title: "早期玉龍",
+      era: "新石器至早期文明",
+      material: "玉",
+      museum: "可填寫收藏單位",
+      q: "如果展品是早期玉龍，它可能代表什麼？",
+      d: "早期龍形玉器常帶有神話與部族信仰色彩。",
+      img: "images/1.jpg",
+      options: ["人與神靈的連結", "單純寫實動物", "外來商品標誌"],
+      answer: 0,
+      explain: "早期玉龍常呈現抽象化造型，重點不在寫實，而在象徵。"
+    },
+    {
+      title: "抽象龍紋玉器",
+      era: "古代",
+      material: "玉",
+      museum: "可填寫收藏單位",
+      q: "玉器表面若呈現簡化龍紋，可能代表什麼？",
+      d: "龍紋不一定都很複雜，有時會以抽象線條呈現。",
+      img: "images/1.jpg",
+      options: ["象徵性高於寫實性", "沒有任何意義", "一定是近代仿品"],
+      answer: 0,
+      explain: "越早期的龍紋常越抽象，可能用線條、弧形、獸面特徵暗示龍。"
+    },
+    {
+      title: "禮制玉龍",
+      era: "古代",
+      material: "玉",
+      museum: "可填寫收藏單位",
+      q: "玉中之龍在展覽中最適合作為哪一區的開場？",
+      d: "玉器常能帶出龍的起源、信仰與禮制背景。",
+      img: "images/1.jpg",
+      options: ["龍的起源與神聖性", "龍的商業包裝", "龍的現代動畫"],
+      answer: 0,
+      explain: "玉中之龍很適合放在第一展區，帶觀眾進入龍的早期文化意義。"
+    }
+  ],
+
+  vessel: [
+    {
+      title: "五爪龍紋器",
+      era: "明清時期",
+      material: "瓷或金屬器",
+      museum: "可填寫收藏單位",
+      q: "器物上的五爪龍通常象徵什麼？",
+      d: "明清以後，五爪龍常與皇權制度連結。",
+      img: "images/1.jpg",
+      options: ["皇權與尊貴", "平民遊戲", "農具用途"],
+      answer: 0,
+      explain: "五爪龍常見於宮廷器物，代表權力、等級與制度。"
+    },
+    {
+      title: "龍紋陳設器",
+      era: "古代",
+      material: "瓷器、銅器或漆器",
+      museum: "可填寫收藏單位",
+      q: "器物之龍與玉中之龍最大的不同是什麼？",
+      d: "器物常進入宮廷、生活、陳設與制度空間。",
+      img: "images/1.jpg",
+      options: ["更強調制度與裝飾", "完全沒有象徵", "只跟兒童有關"],
+      answer: 0,
+      explain: "器物上的龍紋常同時具有裝飾性與權力象徵。"
+    },
+    {
+      title: "龍紋青銅器",
+      era: "商周至古代",
+      material: "青銅",
+      museum: "可填寫收藏單位",
+      q: "若龍紋出現在青銅器上，可能讓人聯想到什麼？",
+      d: "青銅器常與祭祀、權力、貴族身份有關。",
+      img: "images/1.jpg",
+      options: ["禮制與權力", "現代廣告", "普通玩具"],
+      answer: 0,
+      explain: "青銅器上的龍紋常帶有莊嚴、神秘與權威感。"
+    },
+    {
+      title: "龍紋瓷器",
+      era: "明清時期",
+      material: "瓷",
+      museum: "可填寫收藏單位",
+      q: "瓷器上的龍紋為何常顯得華麗？",
+      d: "瓷器可透過釉色、彩繪與燒製技術呈現精細紋樣。",
+      img: "images/1.jpg",
+      options: ["工藝技術與宮廷審美結合", "因為只是隨便畫", "因為完全不重視細節"],
+      answer: 0,
+      explain: "瓷器龍紋常展現技術、審美與政治象徵的結合。"
+    },
+    {
+      title: "龍紋宮廷器物",
+      era: "古代宮廷文化",
+      material: "多種媒材",
+      museum: "可填寫收藏單位",
+      q: "器物之龍最適合強調哪個策展重點？",
+      d: "器物可以讓觀眾看到龍如何進入具體物件與生活空間。",
+      img: "images/1.jpg",
+      options: ["龍紋如何成為權力與工藝符號", "龍完全消失", "龍只存在於文字"],
+      answer: 0,
+      explain: "器物之龍能呈現龍從神話符號轉化為制度、工藝與審美符號的過程。"
+    }
+  ],
+
+  ink: [
+    {
+      title: "墨龍圖",
+      era: "古代繪畫",
+      material: "水墨設色",
+      museum: "可填寫收藏單位",
+      q: "筆墨中的龍通常較強調什麼？",
+      d: "水墨龍常透過線條、墨色與留白表現氣勢。",
+      img: "images/1.jpg",
+      options: ["精神與氣韻", "餐具功能", "測量用途"],
+      answer: 0,
+      explain: "筆墨之龍重點常不在寫實，而在氣勢、想像與精神。"
+    },
+    {
+      title: "雲龍圖",
+      era: "古代繪畫",
+      material: "水墨",
+      museum: "可填寫收藏單位",
+      q: "畫家用雲霧包圍龍身，可能想表現什麼？",
+      d: "龍常被描繪為能升天入海、變化莫測的神獸。",
+      img: "images/1.jpg",
+      options: ["神秘與變化", "重量很重", "不能移動"],
+      answer: 0,
+      explain: "雲霧能讓龍看起來更神秘，也強化牠游動於天地之間的感覺。"
+    },
+    {
+      title: "筆勢龍紋",
+      era: "古代繪畫",
+      material: "紙本或絹本水墨",
+      museum: "可填寫收藏單位",
+      q: "筆墨龍和器物龍相比，哪一點更明顯？",
+      d: "繪畫比器物更能展現筆勢和個人風格。",
+      img: "images/1.jpg",
+      options: ["藝術家的想像與筆法", "固定容器功能", "食物保存功能"],
+      answer: 0,
+      explain: "筆墨龍更重視筆法、氣韻與藝術家的個人表現。"
+    },
+    {
+      title: "藏身雲水之龍",
+      era: "古代繪畫",
+      material: "水墨",
+      museum: "可填寫收藏單位",
+      q: "水墨龍不完整露出身體，可能是為了什麼？",
+      d: "有些龍只露出頭、爪或部分身軀。",
+      img: "images/1.jpg",
+      options: ["留下想像空間", "畫家忘記畫完", "代表龍不存在"],
+      answer: 0,
+      explain: "部分顯現反而能增加神秘感，讓觀眾想像龍藏在雲水之中。"
+    },
+    {
+      title: "龍的精神化",
+      era: "古代至近現代",
+      material: "水墨",
+      museum: "可填寫收藏單位",
+      q: "筆墨之龍最適合作為展覽最後一區的原因是什麼？",
+      d: "最後一區可以從物質展品轉向精神與想像。",
+      img: "images/1.jpg",
+      options: ["讓觀眾感受龍的精神化與藝術化", "因為它最不重要", "因為它沒有文化意義"],
+      answer: 0,
+      explain: "筆墨之龍適合做結尾，讓觀眾從器物與制度走向藝術想像。"
+    }
+  ]
+};
+
+function show(id) {
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+
+function startGame() {
+  show("select");
+}
+
+function startStage(s) {
+  stage = s;
+  index = 0;
+  show("game");
+  loadQuestion();
+}
+
+function loadQuestion() {
+  clearInterval(timer);
+  answered = false;
+
+  let q = data[stage][index];
+
+  document.getElementById("card").className = "card " + stage;
+  document.getElementById("stageName").innerText =
+    stageText[stage] + "｜第 " + (index + 1) + " 件作品";
+
+  document.getElementById("artTitle").innerText = q.title;
+  document.getElementById("artInfo").innerText =
+    q.era + "｜" + q.material + "｜" + q.museum;
+
+  document.getElementById("question").innerText = q.q;
+  document.getElementById("desc").innerText = q.d;
+
+  let img = document.getElementById("artImg");
+  if (q.img) {
+    img.src = q.img;
+    img.style.display = "block";
+  } else {
+    img.style.display = "none";
+  }
+
+  let optBox = document.getElementById("options");
+  optBox.innerHTML = "";
+
+  q.options.forEach((opt, i) => {
+    let btn = document.createElement("button");
+    btn.innerText = opt;
+    btn.onclick = () => answer(i);
+    optBox.appendChild(btn);
+  });
+
+  let feedback = document.getElementById("feedback");
+  feedback.style.display = "none";
+  feedback.innerText = "";
+
+  startTimer();
+}
+
+function startTimer() {
+  timeLeft = 15;
+  document.getElementById("timer").innerText = "⏳ 倒數 " + timeLeft + " 秒";
+
+  clearInterval(timer);
+
+  timer = setInterval(() => {
+    timeLeft--;
+    document.getElementById("timer").innerText = "⏳ 倒數 " + timeLeft + " 秒";
+
+    if (timeLeft <= 0) {
+      clearInterval(timer);
+      answer(-1);
+    }
+  }, 1000);
+}
+
+function answer(i) {
+  if (answered) return;
+  answered = true;
+
+  clearInterval(timer);
+
+  let q = data[stage][index];
+  let feedback = document.getElementById("feedback");
+
+  if (i === q.answer) {
+    score[stage]++;
+    feedback.innerText = "✅ 答對了！" + q.explain;
+  } else if (i === -1) {
+    feedback.innerText = "⏰ 時間到！" + q.explain;
+  } else {
+    feedback.innerText = "❌ 答錯了！" + q.explain;
+  }
+
+  feedback.style.display = "block";
+  updateBar();
+
+  let buttons = document.querySelectorAll("#options button");
+  buttons.forEach(btn => btn.disabled = true);
+
+  let nextBtn = document.createElement("button");
+  nextBtn.innerText = "下一題";
+  nextBtn.onclick = nextQuestion;
+  document.getElementById("options").appendChild(nextBtn);
+}
+
+function nextQuestion() {
+  index++;
+
+  if (index >= data[stage].length) {
+    show("select");
+  } else {
+    loadQuestion();
+  }
+}
+
+function updateBar() {
+  document.getElementById("jadeBar").style.width = score.jade * 20 + "%";
+  document.getElementById("vesselBar").style.width = score.vessel * 20 + "%";
+  document.getElementById("inkBar").style.width = score.ink * 20 + "%";
+}
+
+function generateDragon() {
+  let j = score.jade;
+  let v = score.vessel;
+  let i = score.ink;
+
+  if (j === 5 && v === 5 && i === 5) {
+    return {
+      title: "太初祖龍",
+      text:
+        "✨ 隱藏結局解鎖 ✨\n\n" +
+        "你解讀了龍的全部形態。\n\n" +
+        "從遠古祭祀中的神聖玉龍，到象徵權力與制度的器物之龍，再到游走於筆墨與想像中的精神之龍，" +
+        "你看見了龍如何成為整個文明的象徵。\n\n" +
+        "你是——真正理解龍的人。",
+      img: "images/gragon-pattern.jpg"
+    };
+  }
+
+  if (j === v && v === i) {
+    return {
+      title: "三相真龍",
+      text:
+        "你的龍紋理解十分平均。\n\n" +
+        "你同時看見了龍的三種面貌：玉的神聖起源、器物的制度象徵，以及筆墨的精神想像。" +
+        "這代表你不是只偏向某一種解讀，而是能從多個角度理解龍如何在中國藝術中流動與轉化。",
+      img: "images/final-three.jpg"
+    };
+  }
+
+  if (j === v && j > i) {
+    return {
+      title: "玉衡御龍",
+      text:
+        "你同時掌握了【玉中之龍】與【器物之龍】。\n\n" +
+        "你能看見龍從早期禮制、祭祀與神聖秩序中誕生，又如何進一步進入宮廷器物、制度權力與工藝美學之中。" +
+        "你的觀察偏向文明秩序與權力象徵。",
+      img: "images/final-jade-vessel.jpg"
+    };
+  }
+
+  if (j === i && j > v) {
+    return {
+      title: "玉墨靈龍",
+      text:
+        "你同時掌握了【玉中之龍】與【筆墨之龍】。\n\n" +
+        "你能理解龍最早的神聖性，也能感受龍在筆墨中轉化為氣韻、想像與精神流動。" +
+        "你的觀察偏向信仰、象徵與藝術精神。",
+      img: "images/final-jade-ink.jpg"
+    };
+  }
+
+  if (v === i && v > j) {
+    return {
+      title: "金墨游龍",
+      text:
+        "你同時掌握了【器物之龍】與【筆墨之龍】。\n\n" +
+        "你能看出龍如何成為器物上的權力與工藝符號，也能感受到它在繪畫中轉化成自由、氣勢與想像。" +
+        "你的觀察偏向形式美感、工藝表現與藝術創造。",
+      img: "images/final-vessel-ink.jpg"
+    };
+  }
+
+  if (j > v && j > i) {
+    return {
+      title: "蒼玉天龍",
+      text:
+        "你是一條【玉中之龍】：重視起源、禮制與神聖秩序。" +
+        "你觀察展品時，特別能看見龍如何從早期信仰與祭祀文化中誕生。",
+      img: "images/final-jade.jpg"
+    };
+  }
+
+  if (v > j && v > i) {
+    return {
+      title: "金紋御龍",
+      text:
+        "你是一條【器物之龍】：理解權力、工藝與制度象徵。" +
+        "你能看出龍紋如何進入器物，成為皇權、等級與審美的圖像語言。",
+      img: "images/final-vessel.jpg"
+    };
+  }
+
+  return {
+    title: "墨雲游龍",
+    text:
+      "你是一條【筆墨之龍】：重視想像、氣韻與精神流動。" +
+      "你能感受到龍在筆墨之間不只是形象，而是一種氣勢與生命感。",
+    img: "images/final-ink.jpg"
+  };
+}
+
+function finish() {
+  clearInterval(timer);
+  show("result");
+
+  let total = score.jade + score.vessel + score.ink;
+  let result = generateDragon();
+
+  document.getElementById("finalTitle").innerText = result.title;
+
+  let finalImg = document.getElementById("finalImg");
+  finalImg.src = result.img;
+  finalImg.style.display = "block";
+
+  document.getElementById("finalText").innerText =
+    "總分：" + total + " / 15" +
+    "\n玉中之龍：" + score.jade + " / 5" +
+    "\n器物之龍：" + score.vessel + " / 5" +
+    "\n筆墨之龍：" + score.ink + " / 5" +
+    "\n\n" + result.text;
+}
+
+function zoomImage() {
+  let img = document.getElementById("artImg");
+  if (img.requestFullscreen) {
+    img.requestFullscreen();
+  }
+}
+</script>
+
+</body>
+</html>
