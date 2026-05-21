@@ -169,7 +169,7 @@ button:disabled {
 
 #artImg {
   width: 100%;
-  max-height: 330px;
+  max-height: 420px;
   object-fit: contain;
   border-radius: 18px;
   margin-top: 14px;
@@ -270,7 +270,7 @@ button:disabled {
 #finalImg {
   width: 80%;
   max-width: 360px;
-  max-height: 280px;
+  max-height: 480px;
   object-fit: contain;
   border-radius: 22px;
   margin: 16px auto;
@@ -699,10 +699,10 @@ function generateDragon() {
       text:
         "✨ 隱藏結局解鎖 ✨\n\n" +
         "你解讀了龍的全部形態。\n\n" +
-        "從遠古祭祀中的神聖玉龍，到象徵權力與制度的器物之龍，再到游走於筆墨與想像中的精神之龍，" +
-        "你看見了龍如何成為整個文明的象徵。\n\n" +
+        "從玉龍，到瓷器之龍，再到游走於筆墨中的龍，" +
+        "你已看見龍紋跨越時代的真正樣貌，真正讀懂了龍文化的核心。\n\n" +
         "你是——真正理解龍的人。",
-      img: "images/gragon-pattern.jpg"
+      img: "images/dragon-pattern.png"
     };
   }
 
@@ -710,21 +710,21 @@ function generateDragon() {
     return {
       title: "三相真龍",
       text:
-        "你的龍紋理解十分平均。\n\n" +
-        "你同時看見了龍的三種面貌：玉的神聖起源、器物的制度象徵，以及筆墨的精神想像。" +
-        "這代表你不是只偏向某一種解讀，而是能從多個角度理解龍如何在中國藝術中流動與轉化。",
-      img: "images/final-three.jpg"
+        "你的龍的理解十分平均。\n\n" +
+        "你同時看見了龍的三種面貌：玉器、瓷器，以及筆墨。" +
+        "你能從不同角度理解龍的意義，是少數擁有完整視野的觀察者。",
+      img: "images/final-three.png"
     };
   }
 
   if (j === v && j > i) {
     return {
-      title: "玉衡御龍",
+      title: "天工御龍",
       text:
-        "你同時掌握了【玉中之龍】與【器物之龍】。\n\n" +
-        "你能看見龍從早期禮制、祭祀與神聖秩序中誕生，又如何進一步進入宮廷器物、制度權力與工藝美學之中。" +
-        "你的觀察偏向文明秩序與權力象徵。",
-      img: "images/final-jade-vessel.jpg"
+        "你同時掌握了【玉中之龍】與【瓷器之龍】。\n\n" +
+        "你對工藝與文明秩序有敏銳的觀察力，看見了龍紋中的技藝與威儀。" +
+        "",
+      img: "images/final-jade-vessel.png"
     };
   }
 
@@ -733,20 +733,20 @@ function generateDragon() {
       title: "玉墨靈龍",
       text:
         "你同時掌握了【玉中之龍】與【筆墨之龍】。\n\n" +
-        "你能理解龍最早的神聖性，也能感受龍在筆墨中轉化為氣韻、想像與精神流動。" +
-        "你的觀察偏向信仰、象徵與藝術精神。",
-      img: "images/final-jade-ink.jpg"
+        "你特別能理解龍紋中的精神性與情感流動，具有細膩而深刻的藝術直覺。" +
+        "",
+      img: "images/final-jade-ink.png"
     };
   }
 
   if (v === i && v > j) {
     return {
-      title: "金墨游龍",
+      title: "青墨游龍",
       text:
-        "你同時掌握了【器物之龍】與【筆墨之龍】。\n\n" +
-        "你能看出龍如何成為器物上的權力與工藝符號，也能感受到它在繪畫中轉化成自由、氣勢與想像。" +
-        "你的觀察偏向形式美感、工藝表現與藝術創造。",
-      img: "images/final-vessel-ink.jpg"
+        "你同時掌握了【瓷器之龍】與【筆墨之龍】。\n\n" +
+        "你能同時感受瓷器的華美與筆墨的氣韻，擁有獨特的藝術感知力。" +
+        "",
+      img: "images/final-vessel-ink.png"
     };
   }
 
@@ -754,28 +754,28 @@ function generateDragon() {
     return {
       title: "蒼玉天龍",
       text:
-        "你是一條【玉中之龍】：重視起源、禮制與神聖秩序。" +
-        "你觀察展品時，特別能看見龍如何從早期信仰與祭祀文化中誕生。",
-      img: "images/final-jade.jpg"
+        "你掌握了【玉中之龍】。" +
+        "你善於發現龍最古老而神聖的面貌，對文化起源有敏銳感受。",
+      img: "images/final-jade.png"
     };
   }
 
   if (v > j && v > i) {
     return {
-      title: "金紋御龍",
+      title: "青華御龍",
       text:
-        "你是一條【器物之龍】：理解權力、工藝與制度象徵。" +
-        "你能看出龍紋如何進入器物，成為皇權、等級與審美的圖像語言。",
-      img: "images/final-vessel.jpg"
+        "你掌握了【瓷器之龍】。" +
+        "你對紋飾、工藝與器物之美有極高敏銳度，能看見細節中的華麗巧思。",
+      img: "images/final-vessel.png"
     };
   }
 
   return {
     title: "墨雲游龍",
     text:
-      "你是一條【筆墨之龍】：重視想像、氣韻與精神流動。" +
-      "你能感受到龍在筆墨之間不只是形象，而是一種氣勢與生命感。",
-    img: "images/final-ink.jpg"
+      "你掌握了【筆墨之龍】。" +
+      "你擅長感受筆墨中的氣韻與生命力，擁有自由而富有想像力的觀察方式。",
+    img: "images/final-ink.png"
   };
 }
 
