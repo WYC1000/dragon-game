@@ -3,6 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- 加這三行：讓手機也能載入 Noto Serif TC -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700;900&display=swap" rel="stylesheet">
+
 <title>龍紋偵探社</title>
 
 <style>
@@ -10,7 +16,7 @@
 
 body {
   margin: 0;
-  font-family: "Noto Serif TC", "Microsoft JhengHei", serif;
+  font-family: "Noto Serif TC", "PingFang TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
   text-align: center;
   color: white;
   background:
@@ -86,6 +92,7 @@ button {
   border-radius: 999px;
   border: 1px solid rgba(255,230,160,0.45);
   font-size: 17px;
+  font-family: "Noto Serif TC", "PingFang TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
   cursor: pointer;
   color: #2b1606;
   background: linear-gradient(135deg, #fff3c4, #d6a546);
