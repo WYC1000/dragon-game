@@ -1,1093 +1,812 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>龍之形：中國藝術名品策展</title>
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    :root {
-      --bg: #070707;
-      --bg-2: #101010;
-      --gold: #d8b46a;
-      --gold-light: #f6ddb0;
-      --jade: #9dd7bd;
-      --porcelain: #d8e8ff;
-      --ink: #d9d4c8;
-      --text: #f7f0e2;
-      --muted: #b8ad9c;
-      --card: rgba(255, 255, 255, 0.075);
-      --card-strong: rgba(255, 255, 255, 0.12);
-      --line: rgba(255, 255, 255, 0.14);
-      --shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      min-height: 100vh;
-      font-family: "Noto Serif TC", "Microsoft JhengHei", "PingFang TC", serif;
-      color: var(--text);
-      background:
-        radial-gradient(circle at 20% 15%, rgba(216, 180, 106, 0.16), transparent 28%),
-        radial-gradient(circle at 80% 20%, rgba(130, 220, 190, 0.1), transparent 25%),
-        radial-gradient(circle at 50% 90%, rgba(120, 150, 255, 0.08), transparent 32%),
-        linear-gradient(135deg, #040404, #111, #050505);
-      overflow-x: hidden;
-    }
-
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      background-image:
-        linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
-      background-size: 70px 70px;
-      mask-image: radial-gradient(circle at center, black, transparent 80%);
-      opacity: 0.45;
-      z-index: -2;
-    }
-
-    body::after {
-      content: "龍";
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: min(42vw, 620px);
-      line-height: 1;
-      color: rgba(216, 180, 106, 0.035);
-      pointer-events: none;
-      z-index: -1;
-      font-weight: 900;
-      letter-spacing: -0.08em;
-    }
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    button {
-      font-family: inherit;
-    }
-
-    .page {
-      display: none;
-      min-height: 100vh;
-      animation: fadeIn 0.55s ease both;
-    }
-
-    .page.active {
-      display: block;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(14px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .container {
-      width: min(1160px, calc(100% - 40px));
-      margin: 0 auto;
-    }
-
-    .topbar {
-      position: sticky;
-      top: 0;
-      z-index: 30;
-      backdrop-filter: blur(18px);
-      background: rgba(5, 5, 5, 0.72);
-      border-bottom: 1px solid var(--line);
-    }
-
-    .topbar-inner {
-      width: min(1160px, calc(100% - 40px));
-      margin: 0 auto;
-      height: 72px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-weight: 700;
-      letter-spacing: 0.16em;
-    }
-
-    .brand-mark {
-      width: 38px;
-      height: 38px;
-      border: 1px solid rgba(216, 180, 106, 0.55);
-      border-radius: 50%;
-      display: grid;
-      place-items: center;
-      color: var(--gold-light);
-      background: radial-gradient(circle, rgba(216,180,106,.24), rgba(255,255,255,.03));
-      box-shadow: 0 0 28px rgba(216,180,106,.15);
-    }
-
-    .nav {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-    }
-
-    .nav button,
-    .ghost-btn,
-    .primary-btn {
-      border: 1px solid rgba(255,255,255,0.14);
-      color: var(--text);
-      background: rgba(255,255,255,0.06);
-      padding: 10px 15px;
-      border-radius: 999px;
-      cursor: pointer;
-      transition: 0.25s ease;
-    }
-
-    .nav button:hover,
-    .ghost-btn:hover,
-    .primary-btn:hover {
-      border-color: rgba(216,180,106,.6);
-      transform: translateY(-2px);
-      background: rgba(216,180,106,.12);
-    }
-
-    .primary-btn {
-      background: linear-gradient(135deg, rgba(216,180,106,.95), rgba(127,88,32,.95));
-      color: #120e08;
-      font-weight: 800;
-      border: none;
-      box-shadow: 0 14px 40px rgba(216,180,106,.18);
-    }
-
-    .hero {
-      position: relative;
-      min-height: calc(100vh - 72px);
-      display: grid;
-      align-items: center;
-      padding: 72px 0 64px;
-    }
-
-    .hero-grid {
-      display: grid;
-      grid-template-columns: 1.05fr 0.95fr;
-      gap: 42px;
-      align-items: center;
-    }
-
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      color: var(--gold-light);
-      letter-spacing: 0.18em;
-      font-size: 14px;
-      margin-bottom: 20px;
-    }
-
-    .spark {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--gold);
-      box-shadow: 0 0 20px var(--gold);
-    }
-
-    h1 {
-      font-size: clamp(48px, 8vw, 108px);
-      line-height: 0.95;
-      letter-spacing: 0.04em;
-      margin-bottom: 24px;
-      text-shadow: 0 12px 45px rgba(0,0,0,.55);
-    }
-
-    .hero-title span {
-      display: block;
-      background: linear-gradient(135deg, #fff7dc, #d8b46a 48%, #8e6a2c);
-      -webkit-background-clip: text;
-      color: transparent;
-    }
-
-    .lead {
-      color: var(--muted);
-      font-size: 18px;
-      line-height: 2;
-      max-width: 660px;
-      margin-bottom: 30px;
-    }
-
-    .hero-actions {
-      display: flex;
-      gap: 14px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-
-    .dragon-panel {
-      position: relative;
-      min-height: 520px;
-      border: 1px solid rgba(216,180,106,.28);
-      border-radius: 36px;
-      background:
-        linear-gradient(145deg, rgba(255,255,255,.12), rgba(255,255,255,.035)),
-        radial-gradient(circle at 30% 20%, rgba(216,180,106,.18), transparent 30%);
-      box-shadow: var(--shadow);
-      overflow: hidden;
-    }
-
-    .dragon-panel::before {
-      content: "";
-      position: absolute;
-      inset: 24px;
-      border: 1px solid rgba(216,180,106,.25);
-      border-radius: 28px;
-    }
-
-    .dragon-line {
-      position: absolute;
-      width: 78%;
-      height: 78%;
-      left: 11%;
-      top: 11%;
-      border-radius: 50%;
-      border: 2px solid rgba(216,180,106,.38);
-      filter: drop-shadow(0 0 18px rgba(216,180,106,.18));
-      animation: float 6s ease-in-out infinite;
-    }
-
-    .dragon-line::before,
-    .dragon-line::after {
-      content: "";
-      position: absolute;
-      border: 2px solid rgba(246,221,176,.5);
-      border-radius: 50%;
-    }
-
-    .dragon-line::before {
-      width: 78%;
-      height: 36%;
-      left: 7%;
-      top: 30%;
-      transform: rotate(-22deg);
-      border-left-color: transparent;
-      border-bottom-color: transparent;
-    }
-
-    .dragon-line::after {
-      width: 34%;
-      height: 34%;
-      right: -4%;
-      top: 12%;
-      box-shadow:
-        -26px 28px 0 -20px rgba(216,180,106,.7),
-        -54px 54px 0 -26px rgba(216,180,106,.45);
-    }
-
-    .dragon-word {
-      position: absolute;
-      inset: 0;
-      display: grid;
-      place-items: center;
-      font-size: clamp(100px, 18vw, 230px);
-      font-weight: 900;
-      color: rgba(255,247,220,.3);
-      letter-spacing: -0.12em;
-    }
-
-    .seal {
-      position: absolute;
-      right: 34px;
-      bottom: 34px;
-      width: 76px;
-      height: 76px;
-      border: 2px solid rgba(216, 60, 40, 0.65);
-      color: rgba(255, 110, 92, 0.85);
-      display: grid;
-      place-items: center;
-      font-size: 22px;
-      writing-mode: vertical-rl;
-      letter-spacing: 0.1em;
-      background: rgba(90, 10, 7, 0.14);
-    }
-
-    @keyframes float {
-      0%, 100% { transform: translateY(0) rotate(0); }
-      50% { transform: translateY(-14px) rotate(2deg); }
-    }
-
-    .section {
-      padding: 78px 0;
-    }
-
-    .section-head {
-      display: flex;
-      align-items: end;
-      justify-content: space-between;
-      gap: 20px;
-      margin-bottom: 28px;
-    }
-
-    .section-title {
-      font-size: clamp(30px, 4vw, 54px);
-      letter-spacing: 0.12em;
-      margin-bottom: 12px;
-    }
-
-    .section-note {
-      color: var(--muted);
-      line-height: 1.8;
-      max-width: 720px;
-    }
-
-    .theme-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
-    }
-
-    .theme-card,
-    .work-card,
-    .info-card {
-      border: 1px solid var(--line);
-      background: var(--card);
-      backdrop-filter: blur(14px);
-      border-radius: 28px;
-      overflow: hidden;
-      box-shadow: 0 22px 60px rgba(0,0,0,.28);
-    }
-
-    .theme-card {
-      min-height: 390px;
-      display: flex;
-      flex-direction: column;
-      cursor: pointer;
-      transition: 0.28s ease;
-      position: relative;
-    }
-
-    .theme-card:hover {
-      transform: translateY(-8px);
-      border-color: rgba(216,180,106,.55);
-      background: var(--card-strong);
-    }
-
-    .theme-visual {
-      min-height: 190px;
-      position: relative;
-      background:
-        radial-gradient(circle at 35% 35%, rgba(255,255,255,.24), transparent 10%),
-        linear-gradient(145deg, rgba(216,180,106,.2), rgba(255,255,255,.035));
-      overflow: hidden;
-    }
-
-    .theme-visual::before {
-      content: "";
-      position: absolute;
-      width: 210px;
-      height: 210px;
-      border: 1px solid rgba(246,221,176,.35);
-      border-radius: 50%;
-      top: 42px;
-      left: 50%;
-      transform: translateX(-50%);
-    }
-
-    .theme-symbol {
-      position: absolute;
-      inset: 0;
-      display: grid;
-      place-items: center;
-      font-size: 86px;
-      color: rgba(246,221,176,.7);
-    }
-
-    .theme-body {
-      padding: 24px;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 20px;
-    }
-
-    .theme-body h3 {
-      font-size: 28px;
-      letter-spacing: 0.1em;
-      margin-bottom: 10px;
-    }
-
-    .theme-body p {
-      color: var(--muted);
-      line-height: 1.8;
-    }
-
-    .enter-line {
-      color: var(--gold-light);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 14px;
-      letter-spacing: 0.12em;
-    }
-
-    .subhero {
-      padding: 72px 0 34px;
-      border-bottom: 1px solid var(--line);
-    }
-
-    .breadcrumb {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      color: var(--muted);
-      font-size: 14px;
-      margin-bottom: 22px;
-    }
-
-    .breadcrumb button {
-      color: var(--gold-light);
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-family: inherit;
-    }
-
-    .subhero h2 {
-      font-size: clamp(42px, 6vw, 76px);
-      letter-spacing: 0.1em;
-      margin-bottom: 18px;
-    }
-
-    .subhero p {
-      max-width: 780px;
-      color: var(--muted);
-      line-height: 1.9;
-      font-size: 17px;
-    }
-
-    .works-grid {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 18px;
-    }
-
-    .work-card {
-      cursor: pointer;
-      transition: 0.26s ease;
-    }
-
-    .work-card:hover {
-      transform: translateY(-7px);
-      border-color: rgba(216,180,106,.55);
-    }
-
-    .work-image {
-      height: 190px;
-      border-bottom: 1px solid var(--line);
-      overflow: hidden;
-      background: rgba(255, 255, 255, 0.04);
-    }
-
-    .work-image img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      display: block;
-      transition: 0.35s ease;
-    }
-
-    .work-card:hover .work-image img {
-      transform: scale(1.06);
-    }
-
-    .work-body {
-      padding: 18px;
-    }
-
-    .work-body h3 {
-      font-size: 19px;
-      line-height: 1.45;
-      margin-bottom: 8px;
-    }
-
-    .meta {
-      color: var(--gold-light);
-      font-size: 13px;
-      margin-bottom: 12px;
-    }
-
-    .work-body p {
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.75;
-    }
-
-    .detail-layout {
-      display: grid;
-      grid-template-columns: 0.95fr 1.05fr;
-      gap: 28px;
-      padding: 56px 0 86px;
-      align-items: start;
-    }
-
-    .detail-image {
-      min-height: 580px;
-      border-radius: 34px;
-      border: 1px solid rgba(216,180,106,.28);
-      background: rgba(255,255,255,.04);
-      box-shadow: var(--shadow);
-      position: sticky;
-      top: 96px;
-      overflow: hidden;
-    }
-
-    .detail-image img {
-      width: 100%;
-      height: 100%;
-      min-height: 580px;
-      object-fit: contain;
-      display: block;
-    }
-
-    .info-card {
-      padding: 34px;
-    }
-
-    .detail-title {
-      font-size: clamp(32px, 4vw, 56px);
-      line-height: 1.2;
-      letter-spacing: 0.08em;
-      margin-bottom: 16px;
-    }
-
-    .detail-meta {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      margin: 24px 0;
-    }
-
-    .meta-box {
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      padding: 16px;
-      background: rgba(255,255,255,.045);
-    }
-
-    .meta-box small {
-      display: block;
-      color: var(--muted);
-      margin-bottom: 7px;
-    }
-
-    .meta-box strong {
-      color: var(--gold-light);
-      font-weight: 600;
-    }
-
-    .tag-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin: 22px 0;
-    }
-
-    .tag {
-      padding: 8px 12px;
-      border-radius: 999px;
-      border: 1px solid rgba(216,180,106,.35);
-      color: var(--gold-light);
-      background: rgba(216,180,106,.08);
-      font-size: 13px;
-    }
-
-    .intro-text {
-      color: #e4dac7;
-      line-height: 2.05;
-      font-size: 17px;
-      margin: 20px 0 26px;
-    }
-
-    .curator-note {
-      border-left: 3px solid var(--gold);
-      padding: 16px 18px;
-      color: var(--muted);
-      line-height: 1.9;
-      background: rgba(216,180,106,.07);
-      border-radius: 0 18px 18px 0;
-    }
-
-    .footer-actions {
-      margin-top: 28px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    .site-footer {
-      border-top: 1px solid var(--line);
-      color: var(--muted);
-      padding: 34px 0;
-      text-align: center;
-      line-height: 1.8;
-    }
-
-    @media (max-width: 980px) {
-      .hero-grid,
-      .detail-layout {
-        grid-template-columns: 1fr;
-      }
-
-      .theme-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .works-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .detail-image {
-        position: relative;
-        top: auto;
-        min-height: 360px;
-      }
-
-      .detail-image img {
-        min-height: 360px;
-      }
-    }
-
-    @media (max-width: 640px) {
-      .topbar-inner {
-        height: auto;
-        padding: 14px 0;
-        align-items: flex-start;
-        flex-direction: column;
-      }
-
-      .nav {
-        justify-content: flex-start;
-      }
-
-      .hero {
-        padding-top: 44px;
-      }
-
-      .dragon-panel {
-        min-height: 360px;
-      }
-
-      .works-grid,
-      .detail-meta {
-        grid-template-columns: 1fr;
-      }
-
-      .section-head {
-        display: block;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>龍紋偵探社</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "Noto Serif TC", "Microsoft JhengHei", serif;
+  text-align: center;
+  color: white;
+  background:
+    radial-gradient(circle at top, rgba(255,220,150,0.25), transparent 35%),
+    linear-gradient(135deg, #100704, #2b1208, #050505);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(255,215,120,0.16) 1px, transparent 1px);
+  background-size: 38px 38px;
+  opacity: 0.35;
+  animation: drift 28s linear infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+body::after {
+  content: "龍";
+  position: fixed;
+  right: -30px;
+  bottom: -70px;
+  font-size: 230px;
+  color: rgba(255,215,120,0.05);
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes drift {
+  from { transform: translateX(0); }
+  to { transform: translateX(-180px); }
+}
+
+.screen {
+  display: none;
+  padding: 28px 18px;
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
+}
+
+.active {
+  display: block;
+  animation: fadeIn 0.6s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+h1 {
+  font-size: 44px;
+  margin-top: 80px;
+  letter-spacing: 4px;
+  color: #ffe7a3;
+  text-shadow: 0 0 18px rgba(255,215,120,0.35);
+}
+
+h2 { letter-spacing: 3px; }
+
+p { line-height: 1.8; }
+
+button {
+  width: 85%;
+  max-width: 440px;
+  padding: 15px 18px;
+  margin: 10px auto;
+  border-radius: 999px;
+  border: 1px solid rgba(255,230,160,0.45);
+  font-size: 17px;
+  cursor: pointer;
+  color: #2b1606;
+  background: linear-gradient(135deg, #fff3c4, #d6a546);
+  box-shadow: 0 7px 18px rgba(0,0,0,0.38);
+  transition: 0.2s;
+  letter-spacing: 1px;
+  display: block;
+}
+
+button:hover {
+  transform: scale(1.035);
+  filter: brightness(1.08);
+}
+
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.secondary-btn {
+  background: linear-gradient(135deg, #eeeeee, #999999);
+}
+
+.card {
+  padding: 30px;
+  margin: 18px auto;
+  border-radius: 26px;
+  width: 92%;
+  max-width: 680px;
+  box-shadow:
+    0 10px 30px rgba(0,0,0,0.48),
+    inset 0 0 22px rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.2);
+  animation: fadeUp 0.5s ease;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.jade {
+  background:
+    radial-gradient(circle at top, rgba(96,203,155,0.3), transparent 35%),
+    linear-gradient(135deg, #1e5643, #0b1d16);
+  color: #d8fff0;
+}
+
+.vessel {
+  background:
+    radial-gradient(circle at top, rgba(255,215,130,0.32), transparent 35%),
+    linear-gradient(135deg, #7d3f16, #2a1307);
+  color: #fff3dd;
+}
+
+.ink {
+  background:
+    radial-gradient(circle at top, rgba(200,200,200,0.25), transparent 35%),
+    linear-gradient(135deg, #3b3b3b, #050505);
+  color: #eeeeee;
+}
+
+.art-label {
+  background: rgba(0,0,0,0.28);
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 16px;
+  padding: 12px;
+  margin: 12px auto;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+#artTitle {
+  font-size: 19px;
+  color: #ffe7a3;
+  margin-bottom: 4px;
+}
+
+#artInfo { opacity: 0.85; }
+
+#artImg {
+  width: 100%;
+  max-height: 420px;
+  object-fit: contain;
+  border-radius: 18px;
+  margin-top: 14px;
+  background: rgba(0,0,0,0.32);
+  border: 4px solid rgba(255,215,120,0.25);
+  box-shadow:
+    0 0 24px rgba(255,215,120,0.18),
+    0 0 70px rgba(0,0,0,0.45);
+  display: none;
+  cursor: zoom-in;
+}
+
+.small {
+  font-size: 15px;
+  opacity: 0.92;
+}
+
+#timer {
+  font-size: 20px;
+  margin: 12px;
+  font-weight: bold;
+  color: #ffe7a3;
+}
+
+#options {
+  position: relative;
+  z-index: 10;
+  margin-top: 12px;
+}
+
+#feedback {
+  min-height: 52px;
+  margin: 14px auto;
+  padding: 14px;
+  width: 90%;
+  max-width: 680px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.13);
+  border: 1px solid rgba(255,255,255,0.16);
+  display: none;
+  line-height: 1.7;
+  position: relative;
+  z-index: 10;
+}
+
+.bar-wrap {
+  width: 90%;
+  max-width: 560px;
+  margin: 18px auto;
+  text-align: left;
+  background: rgba(0,0,0,0.22);
+  border-radius: 22px;
+  padding: 18px;
+  border: 1px solid rgba(255,255,255,0.12);
+}
+
+.bar-title {
+  margin-top: 12px;
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+
+.bar-bg {
+  width: 100%;
+  height: 13px;
+  background: rgba(255,255,255,0.18);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.bar {
+  height: 100%;
+  width: 0%;
+  transition: 0.35s;
+}
+
+#jadeBar { background: #42d392; }
+#vesselBar { background: #e6b45c; }
+#inkBar { background: #b58cff; }
+
+.result-box {
+  background: rgba(0,0,0,0.38);
+  border-radius: 28px;
+  padding: 28px;
+  width: 90%;
+  max-width: 680px;
+  margin: 70px auto 20px;
+  border: 1px solid rgba(255,255,255,0.16);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.5);
+}
+
+#finalTitle {
+  font-size: 30px;
+  color: #ffe7a3;
+  margin-bottom: 12px;
+}
+
+#finalImg {
+  width: 80%;
+  max-width: 360px;
+  max-height: 480px;
+  object-fit: contain;
+  border-radius: 22px;
+  margin: 16px auto;
+  display: none;
+  border: 3px solid rgba(255,215,120,0.25);
+}
+
+.badge {
+  display: inline-block;
+  padding: 6px 14px;
+  margin: 8px;
+  border-radius: 999px;
+  background: rgba(255,215,120,0.16);
+  border: 1px solid rgba(255,215,120,0.3);
+  color: #ffe7a3;
+}
+
+.note {
+  opacity: 0.82;
+  font-size: 14px;
+}
+</style>
 </head>
+
 <body>
-  <header class="topbar">
-    <div class="topbar-inner">
-      <div class="brand" onclick="showHome()" style="cursor:pointer;">
-        <div class="brand-mark">龍</div>
-        <div>龍之形</div>
-      </div>
-      <nav class="nav">
-        <button onclick="showHome()">首頁</button>
-        <button onclick="showTheme('jade')">玉中之龍</button>
-        <button onclick="showTheme('porcelain')">瓷器之龍</button>
-        <button onclick="showTheme('ink')">筆墨之龍</button>
-      </nav>
+
+<div id="home" class="screen active">
+  <h1>🐉 龍紋偵探社</h1>
+  <p>穿越三個展區，觀察每件展品中的龍紋造型、姿態與紋飾細節，找出隱藏在作品中的時代特色與文化意義。</p>
+  <p class="note">請在不同展區中完成屬於你的「龍紋調查任務」！</p>
+  <button onclick="startGame()">開始調查</button>
+</div>
+
+<div id="select" class="screen">
+  <h2>選擇展區</h2>
+  <p>每個展區有五件作品。請依序仔細觀察後回答問題。</p>
+  <p class="note">每個問題限時15秒</p>
+
+  <button onclick="startStage('jade')">🟢 玉中之龍</button>
+  <button onclick="startStage('vessel')">🟡 瓷器之龍</button>
+  <button onclick="startStage('ink')">🟣 筆墨之龍</button>
+
+  <div class="bar-wrap">
+    <div class="bar-title">玉中之龍</div>
+    <div class="bar-bg"><div id="jadeBar" class="bar"></div></div>
+
+    <div class="bar-title">瓷器之龍</div>
+    <div class="bar-bg"><div id="vesselBar" class="bar"></div></div>
+
+    <div class="bar-title">筆墨之龍</div>
+    <div class="bar-bg"><div id="inkBar" class="bar"></div></div>
+  </div>
+
+  <button class="secondary-btn" onclick="finish()">結算結果</button>
+</div>
+
+<div id="game" class="screen">
+  <div id="card" class="card">
+    <div class="badge" id="stageName"></div>
+
+    <div class="art-label">
+      <div id="artTitle"></div>
+      <div id="artInfo"></div>
     </div>
-  </header>
 
-  <main>
-    <section id="homePage" class="page active">
-      <div class="hero">
-        <div class="container hero-grid">
-          <div>
-            <div class="eyebrow"><span class="spark"></span> 中國藝術名品展品介紹網頁</div>
-            <h1 class="hero-title"><span>龍之形</span><span>器物與筆墨之間</span></h1>
-            <p class="lead">
-              本展以「龍」為核心意象，從玉器、瓷器與筆墨三種媒材出發，三個主題共十五件作品介紹。
-            </p>
-            <div class="hero-actions">
-              <button class="primary-btn" onclick="scrollToThemes()">進入展覽</button>
-              <button class="ghost-btn" onclick="showTheme('jade')">從玉器開始</button>
-            </div>
-          </div>
+    <img id="artImg" src="" onclick="zoomImage()">
 
-          <div class="dragon-panel" aria-label="龍形高級視覺設計">
-            <div class="dragon-line"></div>
-            <div class="dragon-word">龍</div>
-            <div class="seal">策展</div>
-          </div>
-        </div>
-      </div>
+    <h2 id="question"></h2>
+    <p id="desc" class="small"></p>
+  </div>
 
-      <section id="themeSection" class="section">
-        <div class="container">
-          <div class="section-head">
-            <div>
-              <h2 class="section-title">三大主題</h2>
-              <p class="section-note">以媒材作為策展分類，讓觀眾從材質、工藝與觀看方式理解龍形如何被轉化。</p>
-            </div>
-          </div>
-          <div class="theme-grid" id="themeCards"></div>
-        </div>
-      </section>
-    </section>
+  <div id="timer"></div>
+  <div id="options"></div>
+  <div id="feedback"></div>
+</div>
 
-    <section id="themePage" class="page">
-      <div class="subhero">
-        <div class="container">
-          <div class="breadcrumb">
-            <button onclick="showHome()">首頁</button><span>/</span><span id="themeBreadcrumb">主題</span>
-          </div>
-          <h2 id="themeTitle"></h2>
-          <p id="themeDescription"></p>
-        </div>
-      </div>
-      <div class="section">
-        <div class="container">
-          <div class="section-head">
-            <div>
-              <h2 class="section-title">作品列表</h2>
-              <p class="section-note">點選任一作品，即可進入單件作品介紹頁面。</p>
-            </div>
-          </div>
-          <div class="works-grid" id="worksGrid"></div>
-        </div>
-      </div>
-    </section>
+<div id="result" class="screen">
+  <div class="result-box">
+    <h2>🔍 偵探結論</h2>
+    <div id="finalTitle"></div>
+    <img id="finalImg" src="">
+    <p id="finalText"></p>
+    <button onclick="location.reload()">再玩一次</button>
+  </div>
+</div>
 
-    <section id="detailPage" class="page">
-      <div class="subhero">
-        <div class="container">
-          <div class="breadcrumb">
-            <button onclick="showHome()">首頁</button><span>/</span>
-            <button id="detailThemeLink">主題</button><span>/</span><span id="detailBreadcrumb">作品</span>
-          </div>
-        </div>
-      </div>
-      <div class="container detail-layout">
-        <div class="detail-image"><img id="detailImg" src="" alt="作品圖片" /></div>
-        <article class="info-card">
-          <h2 class="detail-title" id="detailTitle"></h2>
-          <div class="detail-meta">
-            <div class="meta-box"><small>年代</small><strong id="detailEra"></strong></div>
-            <div class="meta-box"><small>媒材</small><strong id="detailMaterial"></strong></div>
-          </div>
-          <div class="tag-row" id="detailTags"></div>
-          <p class="intro-text" id="detailIntro"></p>
-          <div class="curator-note" id="detailNote"></div>
-          <div class="footer-actions">
-            <button class="primary-btn" id="backToThemeBtn">回到本主題</button>
-            <button class="ghost-btn" onclick="showHome()">回首頁</button>
-          </div>
-        </article>
-      </div>
-    </section>
-  </main>
+<script>
+let stage = "";
+let index = 0;
+let timer;
+let timeLeft = 15;
+let answered = false;
 
-  <footer class="site-footer">
-    <div class="container">
-      龍之形：中國藝術名品策展｜玉器、瓷器、筆墨三大展區<br />
-    </div>
-  </footer>
+let score = {
+  jade: 0,
+  vessel: 0,
+  ink: 0
+};
 
-  <script>
-    const data = {
-      jade: {
-        id: "jade",
-        title: "玉中之龍",
-        subtitle: "",
-        symbol: "玉",
-        description: "在中國藝術的發展中，玉器是最早出現龍形象的重要媒材之一，也是龍文化起源的重要見證。早期的龍並非今日所熟悉的威嚴帝王象徵，而是帶有抽象、神秘的圖騰特徵，寄託著古人對天地、自然與神靈的想像。蜷曲盤旋的龍形被雕刻於玉器之上，不僅展現出早期中國藝術的造型特色，也反映出龍作為神獸的原始面貌。 在中國古代，玉被視為具有靈性與神聖力量的材質，常用於祭祀、祈福與禮儀之中，因此玉器上的龍不只是裝飾，更象徵著天地溝通、神靈崇拜與生命信仰。透過這些古老的玉雕作品，我們得以看見龍如何從遠古圖騰逐漸發展為具有神性意義的文化象徵，也為後世龍在中國藝術中的多元形象奠定了基礎。 ",
-        works: [
-          {
-            id: "jade-1",
-            title: "玉豬龍",
-            era: "紅山文化晚期",
-            material: "玉",
-            keywords: ["尺寸：長7.8公分 寬5.6公分 厚2.1-2.6公分"],
-            image: "images/1-1.jpg",
-            short: "以蜷曲環狀的身軀結合近似豬首的頭部，呈現中國早期龍形尚未完全定型前的神祕樣貌。",
-            intro: "紅山文化玉豬龍是中國目前已知最早的龍形玉器之一，出土於新石器時代紅山文化遺址，距今約五千多年，被譽為「中華第一龍」，在中國龍文化的起源研究中具有重要地位。作品整體呈蜷曲環狀，頭部近似豬首，身體細長如蛇，因此又被稱為「玉豬龍」。與後世常見威嚴華麗的龍形象不同，玉豬龍的造型較為抽象簡潔，顯示出早期龍的形象尚未完全定型，仍保留著原始圖騰的神秘特徵，也反映出遠古先民對自然力量與神靈世界的想像。玉豬龍以玉雕刻而成，而玉在中國古代被視為具有靈性與神聖意義的材質，常用於祭祀與禮儀，因此這件作品不僅是一件裝飾性的玉器，更可能具有宗教信仰、祭祀儀式或身份象徵的功能。其造型雖然簡潔，卻具有流暢的線條與完整的輪廓，展現出早期玉雕工藝的成熟技術。作為中國龍文化的早期象徵，玉豬龍不僅展現了龍從原始圖騰到文化神獸的發展起點，也為後世中國藝術中龍的形象奠定了基礎。 ",
-            note: "選品原因：選擇玉豬龍作為本展區「玉中之龍」的第一件展品，具有代表龍文化起源的重要意義。相較於後世象徵皇權與威嚴的龍，玉豬龍保留了龍最早期神秘、抽象的圖騰特徵，能讓觀者看見龍形象最初的樣貌。 "
-          },
-          {
-            id: "jade-2",
-            title: "玉龍紋佩",
-            era: "戰國晚期至西漢早期",
-            material: "玉",
-            keywords: ["尺寸：寬2.2公分 高4.9公分 厚0.5公分"],
-            image: "images/1-2.jpg",
-            short: "以流暢靈動的龍形與細緻陰線刻展現戰國至漢代玉器中成熟的龍紋裝飾。",
-            intro: "《玉龍紋佩》為戰國晚期至西漢早期的玉器作品，是中國古代佩飾玉器的重要代表之一，展現了龍紋在玉器藝術中的成熟發展。作品以龍形作為主要裝飾，整體造型流暢靈動，龍身彎曲盤旋，姿態富有動感，已不同於早期玉豬龍較為抽象的圖騰形式，而是逐漸發展為具有裝飾性與象徵意義的成熟龍形。在技法上，此件作品運用細緻的陰線刻勾勒龍身輪廓與紋飾，使龍的身形與細部更加清晰立體。器表可見流動的線條與裝飾性紋樣，尤其龍身周圍常結合延伸的雲氣紋，透過細密的刻線增加層次感，也讓龍的姿態更顯輕盈靈動。此類作品有時會因應原始玉料的形狀調整器身設計，例如器身下端彎轉成尖，顯示工匠在雕刻時不僅考量裝飾效果，也巧妙利用玉料本身的自然外形進行構圖設計。玉龍紋佩的表面經過細緻琢磨與拋光，使玉質呈現溫潤光澤，展現戰國至漢代玉器工藝的高度成熟。龍紋不再只是神秘圖騰，而是透過精巧的線刻、雲紋裝飾與流動構圖，展現出龍在此時期已逐漸與吉祥、權力及貴族文化產生連結。",
-            note: "選品原因：選擇《玉龍紋佩》作為本展區的第二件展品，是因為它能清楚展現龍形象在中國藝術中的發展與轉變。若說紅山文化玉豬龍代表的是龍的原始圖騰起源，那麼玉龍紋佩則呈現出龍從神秘抽象的形態，逐漸演變為具有裝飾性、藝術性與文化象徵意義的成熟形象。 "
-          },
-          {
-            id: "jade-3",
-            title: "玉龍紋盤",
-            era: "北宋或遼",
-            material: "玉",
-            keywords: ["尺寸：高2.2公分 口徑26.2公分 底徑22.2公"],
-            image: "images/1-3.jpg",
-            short: "以圓盤器形結合正反兩面的行龍紋與鏤空卷草紋，展現宋遼時期玉雕龍紋的成熟裝飾美學。",
-            intro: "《玉龍紋盤》為北宋或遼代的玉器作品，是中國古代龍紋玉器在成熟發展後的重要代表之一。作品以圓盤為器形，玉質溫潤，器緣可見褐黃色沁斑，呈現出歲月沉積的自然痕跡。盤面正反兩面皆雕飾行龍紋，龍呈尖吻、長角，身軀修長並如飄帶般彎曲翻轉，展現出強烈的動勢與流動感。在技法上，龍身遍佈細密鱗片，並以陰刻細線加以強化，使紋理更加清晰立體；四肢肌理飽滿，足部呈三趾，趾甲銳利，增強整體的力量感。龍紋之間則以鏤空卷草紋作為背景，使主體與空間形成層次分明的構圖效果，呈現繁複而有秩序的視覺結構。正反兩面皆精細雕琢，僅在細節上略有變化，顯示出工匠在對稱構圖中仍保有靈活的裝飾處理。 整體而言，《玉龍紋盤》展現出宋遼時期玉雕工藝的高度成熟，龍紋已不僅具有象徵意義，更結合精細技法與裝飾美學，呈現出威嚴、秩序與藝術性兼具的成熟龍形象。 ",
-            note: "選品原因：選擇《玉龍紋盤》作為本展區「玉中之龍」的第三件展品，是因為它能作為龍紋玉器發展的後期代表，完整呈現龍形象從原始圖騰到成熟裝飾藝術的演變歷程。玉龍紋盤的器形與雕刻方式也反映出玉器功能的轉變，顯示龍紋不再侷限於宗教或禮儀用途，而是進一步融入工藝美術與日常審美之中。 "
-          },
-          {
-            id: "jade-4",
-            title: "玉鏤空龍紋帶版",
-            era: "元",
-            material: "玉",
-            keywords: ["尺寸：長7.4公分 寬5.8公分 厚0.7公分 "],
-            image: "images/1-4.png",
-            short: "以鏤空雕刻呈現翻騰龍紋與卷雲紋，兼具服飾配件、身份象徵與元代華麗工藝特色。",
-            intro: "元代的玉鏤空龍紋帶版是一件用白玉雕成的腰帶裝飾，雖然尺寸不大，但雕刻非常精細，不只是裝飾品，也象徵配戴者的身份與地位。這件作品最大的特色是「鏤空雕刻」技法。工匠需要先把玉材局部挖空，再保留細小的紋飾結構，製作過程很困難，一不小心玉石就可能破裂。這件作品卻能在小小的玉件上完整呈現複雜的龍紋和卷雲紋，可見元代的玉雕技術已經相當成熟。鏤空的設計也讓光線可以穿透玉器，增加立體感和層次感。帶版中央的主體是龍紋，龍身細長彎曲，姿態像在翻騰一樣，充滿力量感，周圍搭配卷雲紋，讓整體看起來更有動感。這種修長、有氣勢的龍紋也是元代很有代表性的特色，和以前較莊重的龍紋相比，元代的風格更華麗、更有力量。除了龍紋之外，四周還有蓮花、磬紋和雲紋等裝飾。龍象徵權力與尊貴，雲紋代表吉祥，蓮花有純潔和佛教文化的意涵，磬紋則和吉慶、禮樂文化有關。這些不同的紋飾放在同一件作品裡，不但讓畫面更豐富，也展現出元代工藝喜歡華麗裝飾的特色。 ",
-            note: "選品原因：首先，這件作品很具有元代龍紋的代表性。與宋代較為典雅、內斂的風格相比，元代龍紋更強調力量感、動態感與繁複裝飾。作品中的龍身修長蜿蜒，周圍大量卷雲環繞，整體構圖密集而華麗，呈現出元代藝術常見的豪放氣勢。這種風格其實也反映了元代作為草原民族建立的大一統王朝，在文化上融合漢文化與遊牧民族審美後所形成的新特色，是一種時代風格的縮影。 其次，這件作品能反映元代高超的玉雕工藝技術。玉本身材質堅硬而脆，鏤空雕刻非常困難，但這件帶版卻能在有限的空間中雕出龍紋、卷雲紋、磬紋與蓮花紋等多層裝飾，而且紋飾之間仍保持流暢與平衡，可見當時工匠已具備相當成熟的技術。尤其龍身細部的陰刻鱗片與鏤空結構，使作品在不同角度觀看時都會產生光影變化，具有很強的立體感與視覺效果。最後，它不只是描繪龍，而是把龍真正融入日常器物之中。帶版原本是服飾配件，因此這件作品其實結合了實用功能、身份象徵與藝術裝飾。龍紋出現在腰帶玉飾上，也暗示配戴者的地位與權力，能夠反映古代社會中龍紋與階級制度之間的關係。 "
-          },
-          {
-            id: "jade-5",
-            title: "玉龍",
-            era: "清",
-            material: "玉",
-            keywords: ["尺寸：長5.1公分 高3.7公分"],
-            image: "images/1-5.png",
-            short: "以青玉雕成盤踞姿態的龍，造型小巧卻細節完整，展現清代玉雕靜中有力與人格化的特殊表現。",
-            intro: "清代的玉龍以青玉雕製而成，整體尺寸雖小，但造型相當獨特。作品中的龍呈盤踞狀，身體蜷曲收攏，形成穩定而集中的構圖。與許多中國藝術中強調飛騰、翻轉與張牙舞爪姿態的龍不同，這件作品選擇較為靜態的盤踞形式，讓龍像是安靜地盤坐於空間之中。然而，這種靜態並未削弱龍的威嚴感，反而因為身體收縮盤繞、四肢集中於中央，形成一種向內凝聚的力量感，使觀者感受到龍彷彿正處於蓄勢待發的狀態。這種靜中有力的表現方式，也讓作品與一般強調外放氣勢的龍紋形成鮮明對比。龍身表面雕有細密鱗片，使玉器在光線照射下更能展現紋理層次。雖然整件作品尺寸僅約五公分，但龍身鱗片、肢體轉折與五官細節仍雕刻得十分完整，尤其盤踞的身體結構需要在有限空間內同時兼顧平衡感與立體感，因此更能看出清代玉雕工藝的成熟與精細。青玉本身色澤沉穩溫潤，也讓作品呈現出內斂而古雅的質感，符合清代宮廷玉器追求細膩、精巧與觀賞性的審美特色。與一般傳統龍紋不同的是，這件作品最特別之處在於擬人化的造型設計。龍的五官並非完全獸形，而是帶有接近人的表情與神態。從正面觀看時，前足的擺放方式甚至像人盤坐時雙手跨膝的姿勢，使整體呈現出一種介於神獸與人物之間的特殊形象。過去中國藝術中的龍，多半強調神獸性與帝王象徵，例如騰雲駕霧、威嚴張揚的姿態；但這件清代玉龍卻讓龍帶有人的情感與性格，使它看起來不只是高高在上的神獸，而更像一種具有靈性與生命感的存在。 ",
-            note: "選品原因：這件作品非常能展現清代龍紋藝術與前代不同的特色，其強調的是觀賞性與人格化。它讓龍不再只是遙不可及的權力象徵，而變成一種具有情感與生命感的藝術形象，這種轉變正好反映了清代工藝美術風格的改變。另外，我認為這件作品很能代表清代玉雕對細節趣味的追求。它不是以龐大尺寸或複雜背景取勝，而是在小型玉雕中透過姿態、神情與細節營造個性。尤其兼具神獸與人物特徵的造型，在龍的藝術表現中其實相當少見，因此具有很高的辨識度與代表性。 "
-          }
-        ]
-      },
-      porcelain: {
-        id: "porcelain",
-        title: "瓷器之龍",
-        subtitle: "",
-        symbol: "瓷",
-        description: "本展區以「瓷器之龍」為主軸，呈現宋至清代之間龍紋圖像在造型上的轉變過程。宋代瓷器中的龍多隱藏在釉色中而不明顯，其形態纖細、線條柔和而含蓄，與雲海、水波的圖案融合在一起。到了元代，青花瓷的製作技術逐漸成熟，龍紋開始在瓷器上成為主體，其姿態翻騰，具有強烈的動感。明代，龍紋進一步成為專屬於皇權的象徵，尤其是對「五爪龍」的嚴格規範，僅皇帝與太子能夠使用，而構圖時常出現「龍戲珠」的畫面。來到清代，龍紋在形象上達到極致，型態愈趨誇張，體現出宮廷對威嚴與地位的追求。 整體而言，龍在瓷器中從早期裝飾性較強，融入器物中，到之後發展成政治權力象徵的核心圖案，此轉變不僅反映出工藝技術的逐漸進步，還展現出不同時代的審美觀念。 ",
-        works: [
-          {
-            id: "porcelain-1",
-            title: "定窯 白瓷劃花螭龍紋碟",
-            era: "宋",
-            material: "白瓷",
-            keywords: ["尺寸：高3.0公分 口徑16.8公分 底徑5.8公分 "],
-            image: "images/2-1.jpg",
-            short: "以牙白色透明釉、劃花螭龍紋與芒口鑲金展現宋代定窯白瓷含蓄典雅的審美特色。",
-            intro: "「白瓷劃花螭龍紋碟」為一淺盤，底下還有圓形的足。全器施有牙白色的透明釉，僅邊緣沒有，而是鑲了一圈金屬，旁邊還微微露出白色胎質。器物的外壁雕刻了三層重疊的蓮花瓣花紋，而中央的突起讓整個作品富有立體感。此作品出自宋代五大名窯之一的定窯，其以出產白瓷著稱。為了燒出純白的瓷器，工匠們需仔細的挑選泥料並剔除雜質。而之所以在盤口有一圈金屬邊，是因為定窯使用了「覆燒法」技法，使作品具有獨特的「芒口」。覆燒法是將要燒的瓷器倒扣，並在入窯前將外圈的釉水去除，因此燒成之後會形成一圈沒有釉保護的邊緣。為了修飾粗糙的外圍並提升質感，同時保護脆弱的口沿，當時的皇室便開始用金屬將芒口包覆起來，最終形成定窯瓷器的特色。作品中央的龍紋形態柔和，相較於後世顯得文雅，並未刻意突出權力象徵，而是融入在整個器物中。而集中於中心的安排，使紋路與周圍的空白形成一種呼吸感，簡約的設計彰顯出宋人追求內斂與理性的傾向。",
-            note: "選品原因：會選擇此作品，是因為其能體現龍紋在瓷器中早期的發展狀態，並為後續時代龍的形象提供比較標準。其次，作品中螭龍的形象以細緻的線條隱藏於釉之下，充分展現出宋代重視「含蓄內斂」美感的特色。因此，本作品不但能凸顯初始龍紋圖像的樣貌，也能成為引導觀賞者理解後世龍紋如何轉變的起點。"
-          },
-          {
-            id: "porcelain-2",
-            title: "青花龍紋瓶",
-            era: "元",
-            material: "青花瓷",
-            keywords: ["尺寸：高27.6 口徑8.2 足徑8公分"],
-            image: "images/2-2.jpg",
-            short: "圓潤器形結合雲龍紋，呈現明初宮廷瓷器端正而宏大的氣度。",
-            intro: "此件元代的青花龍紋瓶，造型修長，口徑粗，頸部細長，腹部圓潤飽滿，整體比例勻稱，展現出元代瓷器的大器格局。瓶身繪有青色的龍紋，龍身以三百六十度的方式環繞整個瓶腹一周，四肢向外伸展、利爪往外突出，呈現翻騰之勢。昂起的龍首與旁邊流動的雲氣，使整體具有強烈的動感和視覺張力，也充滿了節奏感與生命力。 在技法上，可以看到紋路中的藍色濃淡有致，筆觸流暢，呈現元代瓷器特有的豪放風格。與宋代龍紋不同，此作品中的龍已經成為核心，主導整體的視覺效果，顯示龍紋地位的提升。另外，龍身細密的鱗片與流暢的線條兼具裝飾性與動態感的呈現，使畫面富有細節又不失該有的氣勢。 這種青花龍紋瓷器的出現，與元代景德鎮的發展密切相關，例如「元青花」一詞便顯現出元代青花瓷在中國歷史上無法撼動的地位。此時期技術成熟，使圖像表現更為鮮明，也使得龍紋從過去隱性的裝飾，轉為明顯的視覺主題。 ",
-            note: "選品原因：會選擇此作品展出，主要在於其清楚呈現龍紋由宋代含蓄的裝飾轉為強烈視覺主體的重要轉折。相較於宋代將龍融合於釉色之中的處理方式，此作品中的龍被明確凸顯於器物中心，透過誇張的肢體姿態與活潑的動態感，展現出更具主導性的形象，標誌著龍紋地位的明顯提升。更重要的是，此作品作為過渡的例子，能讓觀賞者了解龍紋如何逐步走向權力象徵，發揮承先啟後的作用。 "
-          },
-          {
-            id: "porcelain-3",
-            title: "白釉刻花海水綠彩雲龍紋碗",
-            era: "明 弘治",
-            material: "白釉",
-            keywords: ["尺寸：高9.3公分 口徑21.2公分 底徑8.8公分 "],
-            image: "images/underglaze-red-dragon-cup-xuande.jpg",
-            short: "以白釉暗刻海水紋搭配綠彩五爪龍，展現明代御窯瓷器精密繁複的工藝與皇權象徵。",
-            intro: "此件白釉刻花海水綠彩雲龍紋碗為明代御窯廠的經典代表作。其器形端正，呈敞口、深腹、矮圈足，胎體厚薄均勻，全器內外及圈足內均施以細膩滋潤的白釉。碗內心與外壁的裝飾，完美結合了釉下暗刻與釉上綠彩工藝。碗內底以刻劃的洶湧海水紋為襯底，中央填繪一條盤旋矯健的五爪綠彩游龍；外壁同樣以細密的暗刻波濤為背景，其上裝飾兩條首尾相接、御風飛行的綠彩行龍。龍身線條流暢，五爪張開如風車狀，在潔白如玉的釉面上顯得格外靈動。碗口沿、內底及足牆處，皆輔以簡練的綠彩雙弦線，使整體視覺更顯嚴謹對稱。這類瓷器的製作程序極為繁複，需在未施釉的半乾胎體上先刻劃海水紋，接著施透明白釉，並精準將預留龍紋區域的白釉刮除，在露出的胎體上刻劃龍鱗細部。經高溫初燒後，再於未施釉的「澀胎」龍紋上填塗綠彩，隨後送入低溫彩爐進行二次焙燒。這種做法能使綠彩緊緊依附於露胎處，令龍身鱗片在綠彩下若隱若現。當光線投射時，嬌嫩的綠色祥龍與背景隱現的暗刻波濤相互呼應，形成青龍出水、凌空展翅的立體視覺效果。五爪龍紋在明代是至高無上的皇權象徵，此碗充分展現了明代中期御用瓷器精湛的技術與典雅的宮廷美學，具有極高的工藝與歷史價值。 ",
-            note: "選品原因："
-          },
-          {
-            id: "porcelain-4",
-            title: "嬌黃凸雕九龍紋方盂",
-            era: "明代 萬曆年間",
-            material: "黃釉瓷",
-            keywords: ["尺寸：高3.8公分"],
-            image: "images/2-4.jpg",
-            short: "以嬌黃釉、凸雕九龍與吳為製款展現晚明陶瓷名匠意識、文房審美與龍紋裝飾的高度結合。",
-            intro: "正方形，斂口窄邊，深壁，平底。外口沿雕回紋一周，四壁各雕雲龍二條凸起，底雕一雲龍戲珠，隙地加飾波濤紋，內裏樸素無紋。從口沿的刻款，得知該作出自陶藝家吳為之手。關於吳為，學界曾出現兩種說法。一說以為吳為即為晚明陶藝家昊十九，活躍於萬曆年間，號「壺隱道人」，所作宜興壺，壺底刻「壺隱老人」，燒造的瓷器有「壺公窯」之稱。另一說則認為昊十九固然為晚明陶藝家，以擅仿明初永、宣瓷器聞名，因能作「卵幕杯」而受到李日華的賞識，而曾以三金作為代價向之訂購「流霞盞」。然而由於明末與清初的文獻均同時出現「吳十九」與「昊十九」兩個名字，況且江西都昌出土的圓形墓誌，說明昊十九可能是排行的稱謂，故文獻記載中的昊十九確有可能是「吳昊十九」。儘管如此，仍然沒有證據可以將「吳昊十九」和「吳為」畫上等號。在此情形下，此件嬌黃凸雕九龍方盂，雖然不一定與吳昊十九有關，卻因紋飾上流露出晚明的風格，以及作品上的「吳為」題款，而反映晚明工藝名家直接以名字作為品牌。",
-            note: "選品原因：首先，此器承載了極高的歷史與名匠價值。在中國傳統陶瓷史上，官窯多不留陶工姓名，而此作口沿戳印有「萬曆年吳為製」陽文楷書銘，實屬罕見。吳為是明代十七世紀少數能於作品留名的傳奇陶藝家，文獻記載其擅長修坯、精控火候，能製出薄如蛋殼的瓷器，此盂正是其傳世的文房代表作。 其次，在工藝與美學表現上，此器堪稱一絕。它打破常規的圓形器皿，採用四方斜壁的獨特造型。全器罩施溫潤高雅的「嬌黃」釉，器表則運用多層次的雕刻技法：深浮雕的四爪龍紋鬚爪細勁、鱗片粒粒鼓起，隱現於淺浮雕的祥雲、細劃水紋與洶湧浪濤之中。九龍姿態矯健生動，展現出高超的空間層次與動態感。最後，此盂完美投射了明代文人的生活提案。器身上的銘文「鈞爾陶兮文爾質，龍函潤珠耀東壁」，不僅點出文房器物滋潤筆墨的功能，更昇華了文人案頭的雅致情調。這件高度僅3.8公分的小巧方盂，既有皇家規格的九龍紋樣與尊貴黃釉，又帶有強烈的民間名匠個人色彩，是研究明末文人書齋文化與陶瓷工藝轉型不可或缺的指標性珍品。 "
-          },
-          {
-            id: "porcelain-5",
-            title: "粉青釉淺浮雕五龍圖梅瓶",
-            era: "清 乾隆",
-            material: "粉青釉瓷",
-            keywords: ["尺寸：35.3 公分"],
-            image: "images/2-5.jpg",
-            short: "以粉青釉與淺浮雕五龍紋結合梅瓶器形，展現清代宮廷瓷器溫潤典雅與皇家威儀並存的藝術特色。",
-            intro: "這款粉青釉淺浮雕五龍圖梅瓶，完美融合了中國傳統瓷藝的溫潤瑩潤與皇家威儀。梅瓶器型典範，小口、短頸、豐肩，腹部下收，線條流暢且富有張力。其胎質細密潔白，通體施以經典的粉青釉。釉層肥厚如脂，色澤幽雅靜謐，宛如雨過天晴後的碧空，又似晶瑩剔電的嫩玉，散發出含蓄內斂的東方美學魅力。瓶身核心採用高超的淺浮雕工藝，生動刻劃了五條神態各異的祥龍。游龍騰躍於雲海波濤之間，鱗甲櫛比，鬚髮飄逸，龍爪遒勁有力，展現出叱吒風雲的皇家氣尊。淺浮雕的線條圓潤流暢，層次分明，在厚潤的粉青釉掩映下，呈現出「隱若現」的獨特視覺效果。光線流轉時，釉色的深淺變化更為游龍增添了靈動的立體感與生命力。此器將單色釉的純淨之美與浮雕工藝的立體感完美結合，既有宋代青瓷的雅致韻味，又兼具清代宮廷御用瓷器的精巧與大氣。無論是作為高端空間的陳設雅玩，還是收藏鑑賞的藝術珍品，這尊梅瓶都承載著歲月淬鍊的工匠精神，堪稱當代瓷藝傳承與創新的雋永之作，完美詮釋了低調奢華與至臻至美的收藏價值。",
-            note: "選品原因：此件粉青釉淺浮雕五龍圖梅瓶，完美融合了清代御窯的頂級工藝與古典美學。梅瓶造型端莊，斂口、短頸、豐肩，線條由上至下流暢收束，展現出挺拔而優雅的器形。全器通體施以粉青釉，釉質肥厚瑩潤，色澤如雨後晴空，澄澈之中帶著一絲溫潤如玉的質感。瓶身以高超的淺浮雕技法雕琢五龍圖案。工匠藉由極致的刀功，在轉折起伏間勾勒出神龍的矯健雄姿。畫面中，五條巨龍穿梭於翻騰的祥雲與洶湧的波濤之間，姿態各異，或昂首張口、或回眸凝視，龍鬚與龍鱗細緻入微、層次分明。淺浮雕的立體感與粉青釉的積釉效應相得益彰，使青釉在紋飾凹凸處呈現出濃淡深淺的微妙變化，彷彿神龍在雲海中若隱若現，靈動非凡。五龍寓意「九五之尊」與「五福臨門」，既彰顯了皇家器宇軒昂的威嚴，又寄託了祥瑞昌盛的美好祝願。本品不論是釉色的純淨度、雕刻的流暢感，還是整體比例的協調性，皆達到增一分則太過、減一分則不及的至臻境界。這不僅是一件展現宮廷匠心與不凡品味的藝術傑作，更是收藏家眼中極具歷史價值與美學震撼的傳世重器，能為任何典藏空間增添一抹不凡的典雅氣度。 "
-          }
-        ]
-      },
-      ink: {
-        id: "ink",
-        title: "筆墨之龍",
-        subtitle: "",
-        symbol: "墨",
-        description: "在中國藝術的發展歷程中，龍的形象不僅存在於玉器與雕刻之中，也深深融入書畫藝術，成為筆墨表現的重要題材之一。與具象的器物雕刻不同，筆墨之龍多見於書法與水墨畫之中，以線條的流動、墨色的濃淡與筆勢的強弱來呈現龍的形體與氣勢，使龍從實體造型轉化為更具抽象與精神性的藝術表現。 在書畫藝術中，龍不再只是具體可見的神獸形象，而是透過筆勢的奔放與墨韻的變化，象徵創造力、力量與天地之氣的流動。藝術家以筆為媒介，將龍的騰雲駕霧與變化無常轉化為畫面上的節奏與動勢，使觀者在筆墨之間感受龍的生命力與精神意象。透過這些作品，我們得以看見龍如何從具象圖騰轉化為抽象的藝術語言，也展現中國書畫中「以形寫神」的核心精神。 ",
-        works: [
-          {
-            id: "ink-1",
-            title: "人物龍鳳帛畫",
-            era: "戰國",
-            material: "帛畫",
-            keywords: ["尺寸：縱 31.2 公分 橫 23.2 公分"],
-            image: "images/3-1.jpg",
-            short: "以楚國貴婦、龍與鳳的形象構成喪葬帛畫，展現早期龍鳳信仰與靈魂升天的精神象徵。",
-            intro: "《人物龍鳳帛畫》現藏於湖南省博物館，1949年出土於長沙陳家大山楚墓，是目前已知最早的中國人物畫之一，也是僅存的戰國帛畫代表作，與《人物御龍帛畫》並稱「先秦繪畫兩大珍寶」。畫面中央為一位楚國貴婦，身形修長，姿態端莊優雅，身著深衣、腰身纖細，展現楚文化柔美飄逸的審美特色。人物上方有展翅鳳凰，左側則有盤旋升騰的龍，象徵祥瑞與引導靈魂升天的神力。全畫以細緻流暢的線描構成，展現戰國時期成熟的造型能力，也奠定中國人物畫「以線造型」的傳統。此畫實為喪葬用的「銘旌」，用於引導亡魂，反映楚地濃厚的巫術與神仙信仰。龍與鳳的出現，不僅象徵尊貴身份，也代表靈魂升往天界的信仰意涵，使作品兼具藝術與宗教功能，是研究先秦繪畫與楚文化的重要關鍵文物。 ",
-            note: "選品原因：本作品結合龍與鳳兩種重要神獸形象，完整呈現戰國楚文化對靈魂升天與神靈世界的想像。同時作為中國最早的人物帛畫之一，具有高度藝術與歷史價值，能清楚展現龍在早期文化中從圖騰走向精神象徵的發展脈絡。 "
-          },
-          {
-            id: "ink-2",
-            title: "長沙馬王堆1號漢墓彩繪帛畫",
-            era: "西漢",
-            material: "帛本設色",
-            keywords: ["尺寸：長205公分 上部寬92公分 下寬47.7公分"],
-            image: "images/3-2.jpg",
-            short: "以T字形構圖描繪天界、人間與地下世界，透過龍與神獸形象展現漢代升仙思想與宇宙觀。",
-            intro: "長沙馬王堆1號漢墓彩繪帛畫》出土於湖南長沙馬王堆漢墓，是西漢時期極具代表性的帛畫作品之一。整體畫面呈T字形構圖，並分為天界、人間與地下三個部分，反映漢代人對宇宙結構、生命與死亡的想像，也展現當時盛行的升仙思想與神話信仰。畫面上方描繪日月、神獸與龍的形象，其中龍並非後世象徵皇權與威嚴的神獸，而是偏向神話世界中的靈性存在。龍身細長蜿蜒，穿梭於天界之間，具有引導亡者靈魂升天、連接天地的象徵意義，同時也反映了中國早期龍圖像仍帶有濃厚宗教與宇宙觀色彩。此外，此作品在線條描繪與色彩運用上也具有高度藝術價值。畫面以流暢且富節奏感的線條構成人物與神獸姿態，展現漢代帛畫成熟的繪畫技巧。龍的形象雖尚未發展成後世常見的霸氣樣貌，但已能看出中國龍圖像逐漸形成的過程。 ",
-            note: "選品原因：選擇《長沙馬王堆1號漢墓彩繪帛畫》作為漢代代表作品，是因為畫中的龍此時仍帶有濃厚神話與宗教性，能展現中國早期龍圖像的精神意涵，也能作為後世龍畫發展的重要起點。"
-          },
-          {
-            id: "ink-3",
-            title: "閬苑女仙圖",
-            era: "五代十國時期",
-            material: "設色絹本",
-            keywords: ["尺寸：縱 42.7 公分 橫 177.2 公分"],
-            image: "images/3-3.jpg",
-            short: "以乘龍升天的仙境場景為核心，呈現龍作為仙界坐騎、通達天地與承載神仙信仰的象徵。",
-            intro: "《閬苑女仙圖》為五代十國南唐畫家阮郜所繪的重要人物畫作品，以道教神仙思想為核心，描繪仙境「閬苑」中女仙乘龍而行的場景。閬苑在中國神話中象徵天界仙境，是超脫凡俗的理想世界，畫中女仙自雲霧間乘龍而來，展現濃厚的飛升與升天意象。此處的龍已不再是早期墓葬中引導靈魂的神獸，而轉化為可穿梭天地的仙界坐騎，體現中古以來「乘龍升天」觀念的延續與發展。作品以工筆重彩技法完成，先以細緻線條勾勒人物與龍的輪廓，再以石青、石綠、朱紅等濃麗色彩層層敷染，使畫面呈現華麗、神聖且富宮廷氣息的視覺效果。本作延續唐代宗教藝術傳統，同時展現南唐精緻優雅的審美風格，也反映當時道教與神仙信仰的盛行。從龍的形象變化來看，此畫象徵龍由宗教神獸逐漸轉化為具有裝飾性與藝術性的仙界象徵，是研究中國神話圖像與人物畫發展的重要作品。 ",
-            note: "選品原因：本作品呈現龍從戰國墓葬引導亡魂的神獸，轉化為仙境中乘騎工具的形象，清楚展現龍在宗教與藝術中的演變。同時結合道教神仙思想與工筆重彩技法，具有高度藝術價值與文化意涵，能補足展覽中龍由「地上信仰」走向「天界想像」的發展脈絡。 "
-          },
-          {
-            id: "ink-4",
-            title: "九龍圖",
-            era: "南宋",
-            material: "水墨紙本",
-            keywords: ["尺寸：高46.3公分 長1096.4公分"],
-            image: "images/3-4.jpg",
-            short: "以九條龍翻騰於雲霧、波濤與雷雨之間的壯闊畫面，展現龍作為自然力量、生命氣勢與水墨精神的藝術象徵。",
-            intro: "《九龍圖》為南宋畫家陳容最具代表性的作品之一，也是中國藝術史上極具代表性的水墨龍畫。作品描繪九條龍翻騰於雲霧、波濤與雷雨之間，整體畫面氣勢磅礴，充滿強烈的動態感與視覺張力，被視為中國水墨龍畫的重要經典。陳容擅長以潑墨技法描繪龍的形態與力量，透過濃淡墨色的變化，以及快速奔放的筆勢，使畫中的龍彷彿在雲雨之中翻騰游動。龍時而隱沒於煙霧之中，時而露出龍首與利爪，形成若隱若現的神秘感，也增加觀者的想像空間。此外，南宋時期水墨畫高度成熟，文人畫風氣興盛，畫家不再只追求工整描繪，而更重視筆墨本身的表現力。《九龍圖》便充分展現南宋水墨藝術對「氣韻」與「動態感」的追求。陳容用豪放的筆法結合潑墨與留白，使龍不只是神話生物，更成為情感與氣勢的藝術載體。與前期如漢代偏向宗教性的龍相比，《九龍圖》中的龍更強調自然力量與生命能量，也象徵中國龍圖像從神話象徵逐漸發展為成熟藝術題材的過程。 ",
-            note: "選品原因：會選擇《九龍圖》作為宋代代表作品，是因為此作品不僅是中國水墨龍畫的重要經典，也展現南宋水墨藝術對氣韻與動態感覺的追求。陳容以潑墨與奔放筆法描繪九條龍翻騰於雲霧之間，使龍從早期偏向宗教性的象徵，逐漸轉變為具有強烈藝術表現性的題材，因此能代表宋代龍畫在藝術技巧與精神表現上的發展。 "
-          },
-          {
-            id: "ink-5",
-            title: "墨龍圖",
-            era: "清",
-            material: "水墨設色",
-            keywords: ["尺寸：畫心為縱175公分 橫91.5公分"],
-            image: "images/3-5.jpg",
-            short: "以濃淡水墨與飛白筆勢描繪龍翻騰雲霧之姿，展現龍作為文人精神、筆墨氣韻與生命力量的藝術象徵。",
-            intro: "《墨龍圖》為清代畫家周璕所繪的水墨龍畫作品，展現清代龍畫從宗教象徵逐漸轉向文人藝術表現的特色。畫面描繪一條龍翻騰於雲霧之間，龍身大幅彎曲盤旋，龍爪張開、鬚髮飛揚，充滿強烈的動感與生命力。作品並未以繁複背景鋪陳，而是運用大量留白與淡墨雲氣營造空間感，使龍若隱若現於天地之間，展現神祕而深遠的意境。此畫屬於典型的「墨龍」題材，以水墨取代重彩，透過濃淡墨色、乾筆與飛白等技法描繪龍的鱗片、鬚髮與翻騰姿態。畫家特別重視筆勢與線條變化，使龍身線條如草書般流動，呈現「書畫同源」的藝術精神。與早期龍作為宗教神獸不同，清代龍的象徵意義更加多元，既代表皇權與國家威嚴，也成為文人寄託豪氣、自由與精神境界的象徵。《墨龍圖》不著重寫實，而強調中國繪畫重視的「氣韻生動」，充分展現水墨藝術以筆寫神的特色。 ",
-            note: "選品原因：本作品展現龍從神話與宗教角色轉變為文人藝術表現的重要過程，能呈現龍文化在不同時代的演變。相較前期作品著重宗教意涵，《墨龍圖》更強調筆墨、氣韻與藝術精神，也能突顯中國水墨畫「以形寫神」與「書畫同源」的特色。 "
-          }
-        ]
-      }
+const stageText = {
+  jade: "玉中之龍",
+  vessel: "瓷器之龍",
+  ink: "筆墨之龍"
+};
+
+const data = {
+  jade: [
+    {
+      title: "玉豬龍",
+      era: "紅山文化晚期",
+      material: "玉",
+      museum: "國立故宮博物院",
+      q: "這件玉豬龍被認為是中國最早期的龍形象之一，它最主要的文化意義是什麼？",
+      d: "",
+      img: "images/1-1.jpg",
+      options: ["表現皇帝至高無上的權力象徵", "作為宗教信仰與圖騰崇拜的神秘象徵", "用於日常生活中的裝飾器物"],
+      answer: 1,
+      explain: "紅山文化玉豬龍屬於新石器時代早期玉器，其造型仍處於抽象與未定型階段，並非後世的帝王象徵或裝飾用途。學界普遍認為其與原始宗教信仰、圖騰崇拜及祭祀活動有關，反映出龍在最初階段主要代表人類對自然與神靈力量的想像。"
+    },
+    {
+      title: "玉龍紋佩",
+      era: "戰國晚期至西漢早期",
+      material: "玉",
+      museum: "國立故宮博物院",
+      q: "從造型與技法來看，這件玉龍紋佩最明顯的藝術特徵是什麼？",
+      d: "",
+      img: "images/1-2.jpg",
+      options: ["以陰線刻表現龍紋，強調流動感與裝飾性", "龍形完全寫實，接近自然生物形態", "以彩繪方式呈現龍的細節與色彩變化"],
+      answer: 0,
+      explain: "戰國至西漢玉龍紋佩主要使用陰線刻技法來描繪龍的輪廓與細節，並搭配雲氣紋形成流動構圖，使龍呈現靈動與裝飾性效果。此時期龍已逐漸從抽象圖騰轉向具有明確造型與文化象徵的藝術形象。"
+    },
+    {
+      title: "玉龍紋盤",
+      era: "北宋或遼",
+      material: "玉",
+      museum: "國立故宮博物院",
+      q: "這件玉龍紋盤在工藝上最能代表宋遼時期玉器發展的哪一項特色？",
+      d: "早期龍形玉器常帶有神話與部族信仰色彩。",
+      img: "images/1-3.jpg",
+      options: ["強調簡約造型，完全去除裝飾紋樣", "使用粗獷刀法，呈現原始未修飾感", " 精細線刻結合鏤空與繁複構圖，強調層次與秩序"],
+      answer: 2,
+      explain: "宋遼時期玉器工藝高度成熟，本件作品以細密陰刻線描繪龍身鱗片，並以鏤空卷草紋構成背景，使主體與空間形成層次分明的構圖。龍紋不僅講求細節，也強調整體秩序與裝飾美感，展現出高度成熟的工藝與審美風格。"
+    },
+    {
+      title: "玉鏤空龍紋帶版",
+      era: "元",
+      material: "玉",
+      museum: "國立故宮博物院",
+      q: "這件元代玉鏤空龍紋帶版最能展現哪一種藝術特色？",
+      d: "",
+      img: "images/1-4.png",
+      options: ["簡潔樸素、強調留白與單一紋樣", "龍紋與多種吉祥紋飾結合，呈現繁複華麗的裝飾風格", "以彩繪顏料為主，強調鮮豔色彩效果"],
+      answer: 1,
+      explain: "這件玉鏤空龍紋帶版最大的特色，在於繁複精細的鏤空雕刻，以及龍紋、卷雲紋、蓮花紋與磬紋等多種吉祥元素的結合。作品展現出元代藝術偏向華麗、富有動態感的審美風格，也反映當時多民族文化交流下形成的裝飾特色。"
+    },
+    {
+      title: "玉龍",
+      era: "清",
+      material: "玉",
+      museum: "國立故宮博物院",
+      q: "這件清代玉龍最特別的地方是什麼？",
+      d: "",
+      img: "images/1-5.png",
+      options: ["龍呈現飛騰翻轉、強調威猛氣勢的姿態", "龍的造型帶有擬人化特徵，看起來像盤坐的人物", "使用大量色彩裝飾，展現華麗感"],
+      answer: 1,
+      explain: "這件玉龍最大的特色，在於其擬人化的造型設計。龍不僅具有接近人的神情，前足姿勢也像人盤坐時雙手跨膝的模樣，使作品呈現介於神獸與人物之間的特殊形象，展現清代玉雕重視趣味性與觀賞性的藝術特色。"
+    }
+  ],
+
+  vessel: [
+    {
+      title: "五爪龍紋器",
+      era: "明清時期",
+      material: "瓷或金屬器",
+      museum: "可填寫收藏單位",
+      q: "器物上的五爪龍通常象徵什麼？",
+      d: "明清以後，五爪龍常與皇權制度連結。",
+      img: "images/1.jpg",
+      options: ["皇權與尊貴", "平民遊戲", "農具用途"],
+      answer: 0,
+      explain: "五爪龍常見於宮廷器物，代表權力、等級與制度。"
+    },
+    {
+      title: "龍紋陳設器",
+      era: "古代",
+      material: "瓷器、銅器或漆器",
+      museum: "可填寫收藏單位",
+      q: "器物之龍與玉中之龍最大的不同是什麼？",
+      d: "器物常進入宮廷、生活、陳設與制度空間。",
+      img: "images/1.jpg",
+      options: ["更強調制度與裝飾", "完全沒有象徵", "只跟兒童有關"],
+      answer: 0,
+      explain: "器物上的龍紋常同時具有裝飾性與權力象徵。"
+    },
+    {
+      title: "龍紋青銅器",
+      era: "商周至古代",
+      material: "青銅",
+      museum: "可填寫收藏單位",
+      q: "若龍紋出現在青銅器上，可能讓人聯想到什麼？",
+      d: "青銅器常與祭祀、權力、貴族身份有關。",
+      img: "images/1.jpg",
+      options: ["禮制與權力", "現代廣告", "普通玩具"],
+      answer: 0,
+      explain: "青銅器上的龍紋常帶有莊嚴、神秘與權威感。"
+    },
+    {
+      title: "龍紋瓷器",
+      era: "明清時期",
+      material: "瓷",
+      museum: "可填寫收藏單位",
+      q: "瓷器上的龍紋為何常顯得華麗？",
+      d: "瓷器可透過釉色、彩繪與燒製技術呈現精細紋樣。",
+      img: "images/1.jpg",
+      options: ["工藝技術與宮廷審美結合", "因為只是隨便畫", "因為完全不重視細節"],
+      answer: 0,
+      explain: "瓷器龍紋常展現技術、審美與政治象徵的結合。"
+    },
+    {
+      title: "龍紋宮廷器物",
+      era: "古代宮廷文化",
+      material: "多種媒材",
+      museum: "可填寫收藏單位",
+      q: "器物之龍最適合強調哪個策展重點？",
+      d: "器物可以讓觀眾看到龍如何進入具體物件與生活空間。",
+      img: "images/1.jpg",
+      options: ["龍紋如何成為權力與工藝符號", "龍完全消失", "龍只存在於文字"],
+      answer: 0,
+      explain: "器物之龍能呈現龍從神話符號轉化為制度、工藝與審美符號的過程。"
+    }
+  ],
+
+  ink: [
+    {
+      title: "墨龍圖",
+      era: "古代繪畫",
+      material: "水墨設色",
+      museum: "可填寫收藏單位",
+      q: "筆墨中的龍通常較強調什麼？",
+      d: "水墨龍常透過線條、墨色與留白表現氣勢。",
+      img: "images/1.jpg",
+      options: ["精神與氣韻", "餐具功能", "測量用途"],
+      answer: 0,
+      explain: "筆墨之龍重點常不在寫實，而在氣勢、想像與精神。"
+    },
+    {
+      title: "雲龍圖",
+      era: "古代繪畫",
+      material: "水墨",
+      museum: "可填寫收藏單位",
+      q: "畫家用雲霧包圍龍身，可能想表現什麼？",
+      d: "龍常被描繪為能升天入海、變化莫測的神獸。",
+      img: "images/1.jpg",
+      options: ["神秘與變化", "重量很重", "不能移動"],
+      answer: 0,
+      explain: "雲霧能讓龍看起來更神秘，也強化牠游動於天地之間的感覺。"
+    },
+    {
+      title: "筆勢龍紋",
+      era: "古代繪畫",
+      material: "紙本或絹本水墨",
+      museum: "可填寫收藏單位",
+      q: "筆墨龍和器物龍相比，哪一點更明顯？",
+      d: "繪畫比器物更能展現筆勢和個人風格。",
+      img: "images/1.jpg",
+      options: ["藝術家的想像與筆法", "固定容器功能", "食物保存功能"],
+      answer: 0,
+      explain: "筆墨龍更重視筆法、氣韻與藝術家的個人表現。"
+    },
+    {
+      title: "藏身雲水之龍",
+      era: "古代繪畫",
+      material: "水墨",
+      museum: "可填寫收藏單位",
+      q: "水墨龍不完整露出身體，可能是為了什麼？",
+      d: "有些龍只露出頭、爪或部分身軀。",
+      img: "images/1.jpg",
+      options: ["留下想像空間", "畫家忘記畫完", "代表龍不存在"],
+      answer: 0,
+      explain: "部分顯現反而能增加神秘感，讓觀眾想像龍藏在雲水之中。"
+    },
+    {
+      title: "龍的精神化",
+      era: "古代至近現代",
+      material: "水墨",
+      museum: "可填寫收藏單位",
+      q: "筆墨之龍最適合作為展覽最後一區的原因是什麼？",
+      d: "最後一區可以從物質展品轉向精神與想像。",
+      img: "images/1.jpg",
+      options: ["讓觀眾感受龍的精神化與藝術化", "因為它最不重要", "因為它沒有文化意義"],
+      answer: 0,
+      explain: "筆墨之龍適合做結尾，讓觀眾從器物與制度走向藝術想像。"
+    }
+  ]
+};
+
+function show(id) {
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+
+function startGame() {
+  show("select");
+}
+
+function startStage(s) {
+  stage = s;
+  index = 0;
+  show("game");
+  loadQuestion();
+}
+
+function loadQuestion() {
+  clearInterval(timer);
+  answered = false;
+
+  let q = data[stage][index];
+
+  document.getElementById("card").className = "card " + stage;
+  document.getElementById("stageName").innerText =
+    stageText[stage] + "｜第 " + (index + 1) + " 件作品";
+
+  document.getElementById("artTitle").innerText = q.title;
+  document.getElementById("artInfo").innerText =
+    q.era + "｜" + q.material + "｜" + q.museum;
+
+  document.getElementById("question").innerText = q.q;
+  document.getElementById("desc").innerText = q.d;
+
+  let img = document.getElementById("artImg");
+  if (q.img) {
+    img.src = q.img;
+    img.style.display = "block";
+  } else {
+    img.style.display = "none";
+  }
+
+  let optBox = document.getElementById("options");
+  optBox.innerHTML = "";
+
+  q.options.forEach((opt, i) => {
+    let btn = document.createElement("button");
+    btn.innerText = opt;
+    btn.onclick = () => answer(i);
+    optBox.appendChild(btn);
+  });
+
+  let feedback = document.getElementById("feedback");
+  feedback.style.display = "none";
+  feedback.innerText = "";
+
+  startTimer();
+}
+
+function startTimer() {
+  timeLeft = 15;
+  document.getElementById("timer").innerText = "⏳ 倒數 " + timeLeft + " 秒";
+
+  clearInterval(timer);
+
+  timer = setInterval(() => {
+    timeLeft--;
+    document.getElementById("timer").innerText = "⏳ 倒數 " + timeLeft + " 秒";
+
+    if (timeLeft <= 0) {
+      clearInterval(timer);
+      answer(-1);
+    }
+  }, 1000);
+}
+
+function answer(i) {
+  if (answered) return;
+  answered = true;
+
+  clearInterval(timer);
+
+  let q = data[stage][index];
+  let feedback = document.getElementById("feedback");
+
+  if (i === q.answer) {
+    score[stage]++;
+    feedback.innerText = "✅ 答對了！" + q.explain;
+  } else if (i === -1) {
+    feedback.innerText = "⏰ 時間到！" + q.explain;
+  } else {
+    feedback.innerText = "❌ 答錯了！" + q.explain;
+  }
+
+  feedback.style.display = "block";
+  updateBar();
+
+  let buttons = document.querySelectorAll("#options button");
+  buttons.forEach(btn => btn.disabled = true);
+
+  let nextBtn = document.createElement("button");
+  nextBtn.innerText = "下一題";
+  nextBtn.onclick = nextQuestion;
+  document.getElementById("options").appendChild(nextBtn);
+}
+
+function nextQuestion() {
+  index++;
+
+  if (index >= data[stage].length) {
+    show("select");
+  } else {
+    loadQuestion();
+  }
+}
+
+function updateBar() {
+  document.getElementById("jadeBar").style.width = score.jade * 20 + "%";
+  document.getElementById("vesselBar").style.width = score.vessel * 20 + "%";
+  document.getElementById("inkBar").style.width = score.ink * 20 + "%";
+}
+
+function generateDragon() {
+  let j = score.jade;
+  let v = score.vessel;
+  let i = score.ink;
+
+  if (j === 5 && v === 5 && i === 5) {
+    return {
+      title: "太初祖龍",
+      text:
+        "✨ 隱藏結局解鎖 ✨\n\n" +
+        "你解讀了龍的全部形態。\n\n" +
+        "從玉龍，到瓷器之龍，再到游走於筆墨中的龍，" +
+        "你已看見龍紋跨越時代的真正樣貌，真正讀懂了龍文化的核心。\n\n" +
+        "你是——真正理解龍的人。",
+      img: "images/dragon-pattern.png"
     };
+  }
 
-    const homePage = document.getElementById("homePage");
-    const themePage = document.getElementById("themePage");
-    const detailPage = document.getElementById("detailPage");
-    const themeCards = document.getElementById("themeCards");
-    const worksGrid = document.getElementById("worksGrid");
+  if (j === v && v === i) {
+    return {
+      title: "三相真龍",
+      text:
+        "你的龍的理解十分平均。\n\n" +
+        "你同時看見了龍的三種面貌：玉器、瓷器，以及筆墨。" +
+        "你能從不同角度理解龍的意義，是少數擁有完整視野的觀察者。",
+      img: "images/final-three.png"
+    };
+  }
 
-    let currentThemeId = "jade";
+  if (j === v && j > i) {
+    return {
+      title: "天工御龍",
+      text:
+        "你同時掌握了【玉中之龍】與【瓷器之龍】。\n\n" +
+        "你對工藝與文明秩序有敏銳的觀察力，看見了龍紋中的技藝與威儀。" +
+        "",
+      img: "images/final-jade-vessel.png"
+    };
+  }
 
-    function setActivePage(page) {
-      [homePage, themePage, detailPage].forEach(p => p.classList.remove("active"));
-      page.classList.add("active");
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
+  if (j === i && j > v) {
+    return {
+      title: "玉墨靈龍",
+      text:
+        "你同時掌握了【玉中之龍】與【筆墨之龍】。\n\n" +
+        "你特別能理解龍紋中的精神性與情感流動，具有細膩而深刻的藝術直覺。" +
+        "",
+      img: "images/final-jade-ink.png"
+    };
+  }
 
-    function showHome() {
-      setActivePage(homePage);
-    }
+  if (v === i && v > j) {
+    return {
+      title: "青墨游龍",
+      text:
+        "你同時掌握了【瓷器之龍】與【筆墨之龍】。\n\n" +
+        "你能同時感受瓷器的華美與筆墨的氣韻，擁有獨特的藝術感知力。" +
+        "",
+      img: "images/final-vessel-ink.png"
+    };
+  }
 
-    function scrollToThemes() {
-      document.getElementById("themeSection").scrollIntoView({ behavior: "smooth" });
-    }
+  if (j > v && j > i) {
+    return {
+      title: "蒼玉天龍",
+      text:
+        "你掌握了【玉中之龍】。" +
+        "你善於發現龍最古老而神聖的面貌，對文化起源有敏銳感受。",
+      img: "images/final-jade.png"
+    };
+  }
 
-    function showTheme(themeId) {
-      currentThemeId = themeId;
-      const theme = data[themeId];
-      document.getElementById("themeBreadcrumb").textContent = theme.title;
-      document.getElementById("themeTitle").textContent = theme.title;
-      document.getElementById("themeDescription").textContent = theme.description;
-      worksGrid.innerHTML = theme.works.map(work => `
-        <article class="work-card" onclick="showDetail('${themeId}', '${work.id}')">
-          <div class="work-image"><img src="${work.image}" alt="${work.title}"></div>
-          <div class="work-body">
-            <div class="meta">${work.era}｜${work.material}</div>
-            <h3>${work.title}</h3>
-            <p>${work.short}</p>
-          </div>
-        </article>
-      `).join("");
-      setActivePage(themePage);
-    }
+  if (v > j && v > i) {
+    return {
+      title: "青華御龍",
+      text:
+        "你掌握了【瓷器之龍】。" +
+        "你對紋飾、工藝與器物之美有極高敏銳度，能看見細節中的華麗巧思。",
+      img: "images/final-vessel.png"
+    };
+  }
 
-    function showDetail(themeId, workId) {
-      currentThemeId = themeId;
-      const theme = data[themeId];
-      const work = theme.works.find(item => item.id === workId);
-      document.getElementById("detailThemeLink").textContent = theme.title;
-      document.getElementById("detailThemeLink").onclick = () => showTheme(themeId);
-      document.getElementById("detailBreadcrumb").textContent = work.title;
-      document.getElementById("detailTitle").textContent = work.title;
-      document.getElementById("detailEra").textContent = work.era;
-      document.getElementById("detailMaterial").textContent = work.material;
-      document.getElementById("detailIntro").textContent = work.intro;
-      document.getElementById("detailNote").textContent = work.note;
-      document.getElementById("detailImg").src = work.image;
-      document.getElementById("detailImg").alt = work.title;
-      document.getElementById("detailTags").innerHTML = work.keywords.map(tag => `<span class="tag">${tag}</span>`).join("");
-      document.getElementById("backToThemeBtn").onclick = () => showTheme(themeId);
-      setActivePage(detailPage);
-    }
+  return {
+    title: "墨雲游龍",
+    text:
+      "你掌握了【筆墨之龍】。" +
+      "你擅長感受筆墨中的氣韻與生命力，擁有自由而富有想像力的觀察方式。",
+    img: "images/final-ink.png"
+  };
+}
 
-    function renderThemeCards() {
-      themeCards.innerHTML = Object.values(data).map(theme => `
-        <article class="theme-card" onclick="showTheme('${theme.id}')">
-          <div class="theme-visual">
-            <div class="theme-symbol">${theme.symbol}</div>
-          </div>
-          <div class="theme-body">
-            <div>
-              <h3>${theme.title}</h3>
-              <p>${theme.subtitle}</p>
-            </div>
-            <div class="enter-line">進入主題 <span>→</span></div>
-          </div>
-        </article>
-      `).join("");
-    }
+function finish() {
+  clearInterval(timer);
+  show("result");
 
-    renderThemeCards();
-  </script>
+  let total = score.jade + score.vessel + score.ink;
+  let result = generateDragon();
+
+  document.getElementById("finalTitle").innerText = result.title;
+
+  let finalImg = document.getElementById("finalImg");
+  finalImg.src = result.img;
+  finalImg.style.display = "block";
+
+  document.getElementById("finalText").innerText =
+    "總分：" + total + " / 15" +
+    "\n玉中之龍：" + score.jade + " / 5" +
+    "\n器物之龍：" + score.vessel + " / 5" +
+    "\n筆墨之龍：" + score.ink + " / 5" +
+    "\n\n" + result.text;
+}
+
+function zoomImage() {
+  let img = document.getElementById("artImg");
+  if (img.requestFullscreen) {
+    img.requestFullscreen();
+  }
+}
+</script>
+
 </body>
 </html>
